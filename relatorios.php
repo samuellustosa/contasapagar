@@ -45,9 +45,11 @@ foreach ($membros as $index => $m) {
 }
 ?>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>📊 Relatórios Detalhados</h2>
-    <span class="badge bg-primary fs-5">Total Geral: R$ <?= number_format($total_geral, 2, ',', '.') ?></span>
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <h2 class="mb-0 mx-auto mt-4">Relatórios Detalhados</h2>
+    <span class="badge bg-primary fs-6 p-3 p-md-2 shadow-sm">
+        Total Geral: R$ <?= number_format($total_geral, 2, ',', '.') ?>
+    </span>
 </div>
 
 <div class="row">
