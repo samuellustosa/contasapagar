@@ -1,0 +1,6 @@
+# Ignorar configurações do banco de dados (se tiver senhas reais futuramente)
+# config.php 
+
+# Arquivos do sistema
+#.DS_Store
+#Thumbs.db
