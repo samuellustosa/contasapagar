@@ -15,13 +15,11 @@ if ($id && $acao) {
     } 
     elseif ($acao == 'excluir') {
         $pdo->prepare("DELETE FROM debts WHERE id = ?")->execute([$id]);
-        header("Location: index.php?mes=$mes&ano=$ano");
+        header("Location: index.php?mes=$mes&ano=$ano&msg=excluido"); // Adicionado &msg=excluido
     } 
     elseif ($acao == 'excluir_membro') {
         $pdo->prepare("DELETE FROM family_members WHERE id = ?")->execute([$id]);
-        header("Location: membros.php");
+        header("Location: membros.php?msg=excluido"); // Adicionado &msg=excluido
     }
-} else {
-    header("Location: index.php");
 }
 ?>

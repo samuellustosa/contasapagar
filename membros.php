@@ -8,16 +8,22 @@ if (isset($_POST['add_member'])) {
     $emoji = strip_tags(trim($_POST['emoji']));
 
     if (!empty($nome) && !empty($emoji)) {
+        // Utiliza Prepared Statements com bindParam para evitar SQL Injection
         $stmt = $pdo->prepare("INSERT INTO family_members (name, emoji) VALUES (:nome, :emoji)");
         $stmt->bindParam(':nome', $nome);
         $stmt->bindParam(':emoji', $emoji);
         $stmt->execute();
+        
+        // Redireciona com mensagem de sucesso
+        header("Location: membros.php?msg=membro_add");
+        exit;
     }
 }
 
 $membros = $pdo->query("SELECT * FROM family_members ORDER BY name ASC")->fetchAll();
 include 'header.php'; 
 ?>
+
 <div class="row g-3"> 
     
     <div class="col-12 col-md-4">

@@ -94,3 +94,17 @@
     <a href="nova-conta.php<?= $query ?>" class="fab">+</a>
 
     <div class="container">
+        <?php if (isset($_GET['msg'])): ?>
+            <div class="alert alert-success alert-dismissible fade show shadow-sm border-0 mt-3" role="alert">
+                <?php
+                    $mensagens = [
+                        'sucesso' => 'Operação realizada com sucesso!',
+                        #'pago' => 'Status de pagamento atualizado!',
+                        'excluido' => 'Registro removido com sucesso!',
+                        'membro_add' => 'Novo membro adicionado à família!',
+                    ];
+                    echo $mensagens[$_GET['msg']] ?? 'Ação concluída!';
+                ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>

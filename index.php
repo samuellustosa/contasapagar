@@ -109,7 +109,7 @@ $contas = $stmt_contas->fetchAll();
                                 <a href="acoes.php?id=<?= $c['id'] ?>&acao=Pagar&mes=<?= $mes_selecionado ?>&ano=<?= $ano_selecionado ?>" class="btn btn-sm btn-light border">
                                     <?= $c['is_paid'] ? 'Desmarcar' : 'Marcar como Pago' ?>
                                 </a>
-                                <a href="acoes.php?id=<?= $c['id'] ?>&acao=excluir&mes=<?= $mes_selecionado ?>&ano=<?= $ano_selecionado ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Excluir?')">
+                                <a href="acoes.php?id=<?= $c['id'] ?>&acao=excluir&mes=<?= $mes_selecionado ?>&ano=<?= $ano_selecionado ?>" class="btn btn-sm btn-outline-danger">
                                     Excluir
                                 </a>
                             </div>
@@ -139,7 +139,9 @@ $contas = $stmt_contas->fetchAll();
                     <a href="acoes.php?id=<?= $c['id'] ?>&acao=Pagar&mes=<?= $mes_selecionado ?>&ano=<?= $ano_selecionado ?>" class="btn btn-sm btn-light border">
                         <?= $c['is_paid'] ? 'Desmarcar' : 'Pagar' ?>
                     </a>
-                    <a href="acoes.php?id=<?= $c['id'] ?>&acao=excluir&mes=<?= $mes_selecionado ?>&ano=<?= $ano_selecionado ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Excluir?')">Excluir</a>
+                    <a href="acoes.php?id=<?= $c['id'] ?>&acao=excluir&mes=<?= $mes_selecionado ?>&ano=<?= $ano_selecionado ?>" class="btn btn-sm btn-outline-danger">
+                        Excluir
+                    </a>
                 </div>
             </div>
         </div>
