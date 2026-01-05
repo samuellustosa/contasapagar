@@ -3,21 +3,29 @@ require_once 'config.php';
 $membros = $pdo->query("SELECT * FROM family_members")->fetchAll();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $stmt = $pdo->prepare("INSERT INTO debts (name, amount, due_date) VALUES (?, ?, ?)");
-    $stmt->execute([$_POST['name'], $_POST['amount'], $_POST['due_date']]);
+    $nome_conta = strip_tags(trim($_POST['name']));
+    $valor = filter_var($_POST['amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+    $data_vencimento = $_POST['due_date'];
+
+    $stmt = $pdo->prepare("INSERT INTO debts (name, amount, due_date) VALUES (:name, :amount, :due_date)");
+    $stmt->bindParam(':name', $nome_conta);
+    $stmt->bindParam(':amount', $valor);
+    $stmt->bindParam(':due_date', $data_vencimento);
+    $stmt->execute();
+    
     $debt_id = $pdo->lastInsertId();
 
     if (!empty($_POST['debtors'])) {
         foreach ($_POST['debtors'] as $mid) {
-            $pdo->prepare("INSERT INTO debt_members (debt_id, member_id) VALUES (?, ?)")->execute([$debt_id, $mid]);
+            $stmt_membro = $pdo->prepare("INSERT INTO debt_members (debt_id, member_id) VALUES (:debt_id, :member_id)");
+            $stmt_membro->bindParam(':debt_id', $debt_id);
+            $stmt_membro->bindParam(':member_id', $mid);
+            $stmt_membro->execute();
         }
     }
 
-    // Captura o mês e o ano da data da conta recém-criada
-    $mes = date('m', strtotime($_POST['due_date']));
-    $ano = date('Y', strtotime($_POST['due_date']));
-
-    // Redireciona para a raiz (./) passando o mês e ano para o mural abrir na data certa
+    $mes = date('m', strtotime($data_vencimento));
+    $ano = date('Y', strtotime($data_vencimento));
     header("Location: ./?mes=$mes&ano=$ano");
     exit;
 }

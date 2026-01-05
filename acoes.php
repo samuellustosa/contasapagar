@@ -1,8 +1,8 @@
 <?php
 require_once 'config.php';
 
-$id = $_GET['id'] ?? null;
-$acao = $_GET['acao'] ?? null;
+$id = isset($_GET['id']) ? (int)$_GET['id'] : null;
+$acao = strip_tags($_GET['acao'] ?? '');
 
 // Captura o mês e ano para garantir o redirecionamento correto
 $mes = $_GET['mes'] ?? date('m');

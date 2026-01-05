@@ -1,16 +1,23 @@
 <?php 
 require_once 'config.php';
 
-// Adicionar novo membro
+// Adicionar novo membro com segurança reforçada
 if (isset($_POST['add_member'])) {
-    $stmt = $pdo->prepare("INSERT INTO family_members (name, emoji) VALUES (?, ?)");
-    $stmt->execute([$_POST['name'], $_POST['emoji']]);
+    // Limpa espaços extras e remove tags HTML por segurança
+    $nome = strip_tags(trim($_POST['name']));
+    $emoji = strip_tags(trim($_POST['emoji']));
+
+    if (!empty($nome) && !empty($emoji)) {
+        $stmt = $pdo->prepare("INSERT INTO family_members (name, emoji) VALUES (:nome, :emoji)");
+        $stmt->bindParam(':nome', $nome);
+        $stmt->bindParam(':emoji', $emoji);
+        $stmt->execute();
+    }
 }
 
 $membros = $pdo->query("SELECT * FROM family_members ORDER BY name ASC")->fetchAll();
 include 'header.php'; 
 ?>
-
 <div class="row g-3"> 
     
     <div class="col-12 col-md-4">
