@@ -98,8 +98,9 @@
 <body class="bg-light pb-5"> 
     
     <nav class="navbar navbar-dark bg-primary shadow-sm py-3 fixed-top">
-        <div class="container text-center">
-            <span class="navbar-brand mb-0 h1">📊 Contas a Pagar</span>
+        <div class="container d-flex justify-content-between align-items-center">
+            <span class="navbar-brand mb-0 h1">Contas a Pagar</span>
+            <a href="logout.php" class="btn btn-sm btn-outline-light">Sair</a>
         </div>
     </nav>
 
