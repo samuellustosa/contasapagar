@@ -2,16 +2,65 @@
 require_once 'config.php';
 include 'header.php'; 
 
-// Totais para os cards
-$total = $pdo->query("SELECT SUM(amount) FROM debts")->fetchColumn() ?: 0;
-$pago = $pdo->query("SELECT SUM(amount) FROM debts WHERE is_paid = 1")->fetchColumn() ?: 0;
+// 1. Pegar o mês e ano da URL ou usar o atual
+$mes_selecionado = $_GET['mes'] ?? date('m');
+$ano_selecionado = $_GET['ano'] ?? date('Y');
+
+// --- LÓGICA DAS SETAS ---
+// Criar um objeto de data com o mês atual para calcular o próximo e o anterior
+$data_atual = new DateTime("$ano_selecionado-$mes_selecionado-01");
+
+$anterior = clone $data_atual;
+$anterior->modify('-1 month');
+$mes_ant = $anterior->format('m');
+$ano_ant = $anterior->format('Y');
+
+$proximo = clone $data_atual;
+$proximo->modify('+1 month');
+$mes_prox = $proximo->format('m');
+$ano_prox = $proximo->format('Y');
+
+$meses_nome = [
+    '01' => 'Janeiro', '02' => 'Fevereiro', '03' => 'Março', '04' => 'Abril',
+    '05' => 'Maio', '06' => 'Junho', '07' => 'Julho', '08' => 'Agosto',
+    '09' => 'Setembro', '10' => 'Outubro', '11' => 'Novembro', '12' => 'Dezembro'
+];
+// ------------------------
+
+// 2. Totais filtrados
+$stmt_total = $pdo->prepare("SELECT SUM(amount) FROM debts WHERE MONTH(due_date) = ? AND YEAR(due_date) = ?");
+$stmt_total->execute([$mes_selecionado, $ano_selecionado]);
+$total = $stmt_total->fetchColumn() ?: 0;
+
+$stmt_pago = $pdo->prepare("SELECT SUM(amount) FROM debts WHERE is_paid = 1 AND MONTH(due_date) = ? AND YEAR(due_date) = ?");
+$stmt_pago->execute([$mes_selecionado, $ano_selecionado]);
+$pago = $stmt_pago->fetchColumn() ?: 0;
+
 $pendente = $total - $pago;
 
-$contas = $pdo->query("SELECT * FROM debts ORDER BY due_date ASC")->fetchAll();
+// 3. Buscar contas
+$stmt_contas = $pdo->prepare("SELECT * FROM debts WHERE MONTH(due_date) = ? AND YEAR(due_date) = ? ORDER BY due_date ASC");
+$stmt_contas->execute([$mes_selecionado, $ano_selecionado]);
+$contas = $stmt_contas->fetchAll();
 ?>
 
+<div class="d-flex justify-content-between align-items-center bg-white p-3 shadow-sm rounded mb-4 border">
+    <a href="index.php?mes=<?= $mes_ant ?>&ano=<?= $ano_ant ?>" class="btn btn-outline-primary rounded-pill">
+        &larr; <span class="d-none d-md-inline">Anterior</span>
+    </a>
+    
+    <div class="text-center">
+        <h5 class="mb-0 fw-bold"><?= $meses_nome[$mes_selecionado] ?></h5>
+        <small class="text-muted"><?= $ano_selecionado ?></small>
+    </div>
 
-<div class="row text-center mb-4 g-2"> <div class="col-4">
+    <a href="index.php?mes=<?= $mes_prox ?>&ano=<?= $ano_prox ?>" class="btn btn-outline-primary rounded-pill">
+        <span class="d-none d-md-inline">Próximo</span> &rarr;
+    </a>
+</div>
+
+<div class="row text-center mb-4 g-2"> 
+    <div class="col-4">
         <div class="card p-2 p-md-3 shadow-sm border-0 h-100">
             <h6 class="text-muted mb-1" style="font-size: 0.75rem;">Total</h6>
             <h5 class="text-primary mb-0" style="font-size: 1rem;">R$ <?= number_format($total, 2, ',', '.') ?></h5>
@@ -30,7 +79,6 @@ $contas = $pdo->query("SELECT * FROM debts ORDER BY due_date ASC")->fetchAll();
         </div>
     </div>
 </div>
-
 
 <div class="card shadow-sm border-0 d-none d-md-block">
     <div class="card-body p-0">
@@ -58,10 +106,10 @@ $contas = $pdo->query("SELECT * FROM debts ORDER BY due_date ASC")->fetchAll();
                         </td>
                         <td class="text-end pe-4">
                             <div class="d-flex justify-content-end gap-2">
-                                <a href="acoes.php?id=<?= $c['id'] ?>&acao=Pagar" class="btn btn-sm btn-light border">
+                                <a href="acoes.php?id=<?= $c['id'] ?>&acao=Pagar&mes=<?= $mes_selecionado ?>&ano=<?= $ano_selecionado ?>" class="btn btn-sm btn-light border">
                                     <?= $c['is_paid'] ? 'Desmarcar' : 'Marcar como Pago' ?>
                                 </a>
-                                <a href="acoes.php?id=<?= $c['id'] ?>&acao=excluir" class="btn btn-sm btn-outline-danger" onclick="return confirm('Excluir?')">
+                                <a href="acoes.php?id=<?= $c['id'] ?>&acao=excluir&mes=<?= $mes_selecionado ?>&ano=<?= $ano_selecionado ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Excluir?')">
                                     Excluir
                                 </a>
                             </div>
@@ -88,24 +136,15 @@ $contas = $pdo->query("SELECT * FROM debts ORDER BY due_date ASC")->fetchAll();
             <div class="d-flex justify-content-between align-items-center">
                 <?= $c['is_paid'] ? '<span class="badge bg-success">Pago</span>' : '<span class="badge bg-warning text-dark">Pendente</span>' ?>
                 <div class="btn-group gap-2">
-                    <a href="acoes.php?id=<?= $c['id'] ?>&acao=Pagar" class="btn btn-sm <?= $c['is_paid'] ? 'btn-light' : 'btn-light' ?> border">
+                    <a href="acoes.php?id=<?= $c['id'] ?>&acao=Pagar&mes=<?= $mes_selecionado ?>&ano=<?= $ano_selecionado ?>" class="btn btn-sm btn-light border">
                         <?= $c['is_paid'] ? 'Desmarcar' : 'Pagar' ?>
                     </a>
-                    <a href="acoes.php?id=<?= $c['id'] ?>&acao=excluir" class="btn btn-sm btn-outline-danger" onclick="return confirm('Excluir?')">Excluir</a>
+                    <a href="acoes.php?id=<?= $c['id'] ?>&acao=excluir&mes=<?= $mes_selecionado ?>&ano=<?= $ano_selecionado ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Excluir?')">Excluir</a>
                 </div>
             </div>
         </div>
     </div>
     <?php endforeach; ?>
-</div>
-
-<div class="card shadow-sm border-0 d-none d-md-block">
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table align-middle">
-                </table>
-        </div>
-    </div>
 </div>
 
 <?php include 'footer.php'; ?>

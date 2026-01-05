@@ -12,7 +12,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $pdo->prepare("INSERT INTO debt_members (debt_id, member_id) VALUES (?, ?)")->execute([$debt_id, $mid]);
         }
     }
-    header("Location: index.php");
+
+    // Captura o mês e o ano da data da conta recém-criada
+    $mes = date('m', strtotime($_POST['due_date']));
+    $ano = date('Y', strtotime($_POST['due_date']));
+
+    // Redireciona para a raiz (./) passando o mês e ano para o mural abrir na data certa
+    header("Location: ./?mes=$mes&ano=$ano");
+    exit;
 }
 include 'header.php'; 
 ?>

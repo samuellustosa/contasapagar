@@ -14,15 +14,15 @@
     <style>
         /* Ajuste para o conteúdo não ficar escondido sob o header fixo */
         body {
-            padding-top: 70px; /* Altura aproximada do navbar */
+            padding-top: 70px;
         }
 
         /* Mantém o menu de pílulas fixo logo abaixo do navbar azul */
         .sticky-menu {
             position: sticky;
-            top: 72px; /* Ajuste conforme a altura exata do seu navbar */
+            top: 72px;
             z-index: 1020;
-            background-color: #f8f9fa; /* Mesma cor do bg-light */
+            background-color: #f8f9fa;
             padding-bottom: 10px;
         }
 
@@ -60,7 +60,14 @@
             transition: 0.3s;
         }
         
-        <?php $pagina_atual = basename($_SERVER['PHP_SELF']); ?>
+        <?php 
+        $pagina_atual = basename($_SERVER['PHP_SELF']); 
+        // Captura o mês e ano da URL para manter a navegação consistente
+        $m = $_GET['mes'] ?? '';
+        $a = $_GET['ano'] ?? '';
+        $query = ($m && $a) ? "?mes=$m&ano=$a" : "";
+        ?>
+
         <?php if ($pagina_atual == 'nova-conta.php'): ?>
             .fab { display: none; }
         <?php endif; ?>
@@ -77,13 +84,13 @@
     <div class="sticky-menu">
         <div class="d-flex justify-content-center pt-3">
             <div class="nav nav-pills bg-white p-1 rounded-pill shadow-sm border">
-                <a class="nav-link rounded-pill <?= ($pagina_atual == 'index.php') ? 'active' : 'text-secondary' ?>" href="index.php">Mural</a>
-                <a class="nav-link rounded-pill <?= ($pagina_atual == 'relatorios.php') ? 'active' : 'text-secondary' ?>" href="relatorios.php">Relatórios</a>
-                <a class="nav-link rounded-pill <?= ($pagina_atual == 'membros.php') ? 'active' : 'text-secondary' ?>" href="membros.php">Família</a>
+                <a class="nav-link rounded-pill <?= ($pagina_atual == 'index.php') ? 'active' : 'text-secondary' ?>" href="./<?= $query ?>">Mural</a>
+                <a class="nav-link rounded-pill <?= ($pagina_atual == 'relatorios.php') ? 'active' : 'text-secondary' ?>" href="relatorios.php<?= $query ?>">Relatórios</a>
+                <a class="nav-link rounded-pill <?= ($pagina_atual == 'membros.php') ? 'active' : 'text-secondary' ?>" href="membros.php<?= $query ?>">Família</a>
             </div>
         </div>
     </div>
 
-    <a href="nova-conta.php" class="fab">+</a>
+    <a href="nova-conta.php<?= $query ?>" class="fab">+</a>
 
     <div class="container">
