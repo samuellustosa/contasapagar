@@ -6,11 +6,34 @@
   alerts.forEach(function(alert) {
     setTimeout(function() {
       const bsAlert = new bootstrap.Alert(alert);
-      bsAlert.close();
+      if (alert) {
+        bsAlert.close();
+      }
     }, 3000); // 3000 milissegundos = 3 segundos
   });
 
-  // 2. Registra o Service Worker para o PWA
+  // 2. Lógica do Skeleton Screen
+  // Seleciona links de navegação, botões de setas e o botão flutuante (+)
+  const navLinks = document.querySelectorAll('.nav-link, .btn-outline-primary, .fab');
+  const skeleton = document.getElementById('skeleton-loader');
+
+  navLinks.forEach(link => {
+    link.addEventListener('click', function(e) {
+      // Não ativa o skeleton se for o botão de excluir (que é perigoso e rápido)
+      if (!this.classList.contains('btn-outline-danger')) {
+        if (skeleton) {
+          // Mostra o bloco de skeleton que você colocou no index.php
+          skeleton.classList.remove('d-none');
+          
+          // Opcional: esconde o conteúdo antigo para o efeito ficar mais limpo
+          const mainContent = document.querySelector('.row, .card, .table-responsive');
+          if (mainContent) mainContent.style.opacity = '0.3';
+        }
+      }
+    });
+  });
+
+  // 3. Registra o Service Worker para o PWA
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('sw.js')

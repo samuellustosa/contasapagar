@@ -7,7 +7,6 @@ $mes_selecionado = $_GET['mes'] ?? date('m');
 $ano_selecionado = $_GET['ano'] ?? date('Y');
 
 // --- LÓGICA DAS SETAS ---
-// Criar um objeto de data com o mês atual para calcular o próximo e o anterior
 $data_atual = new DateTime("$ano_selecionado-$mes_selecionado-01");
 
 $anterior = clone $data_atual;
@@ -25,7 +24,6 @@ $meses_nome = [
     '05' => 'Maio', '06' => 'Junho', '07' => 'Julho', '08' => 'Agosto',
     '09' => 'Setembro', '10' => 'Outubro', '11' => 'Novembro', '12' => 'Dezembro'
 ];
-// ------------------------
 
 // 2. Totais filtrados
 $stmt_total = $pdo->prepare("SELECT SUM(amount) FROM debts WHERE MONTH(due_date) = ? AND YEAR(due_date) = ?");
@@ -42,7 +40,28 @@ $pendente = $total - $pago;
 $stmt_contas = $pdo->prepare("SELECT * FROM debts WHERE MONTH(due_date) = ? AND YEAR(due_date) = ? ORDER BY due_date ASC");
 $stmt_contas->execute([$mes_selecionado, $ano_selecionado]);
 $contas = $stmt_contas->fetchAll();
+
+
 ?>
+
+<div id="skeleton-loader" class="d-none">
+    <div class="skeleton mb-4" style="height: 70px; border-radius: 10px; width: 100%;"></div>
+
+    <div class="row text-center mb-4 g-2"> 
+        <div class="col-4">
+            <div class="skeleton" style="height: 85px; border-radius: 10px;"></div>
+        </div>
+        <div class="col-4">
+            <div class="skeleton" style="height: 85px; border-radius: 10px;"></div>
+        </div>
+        <div class="col-4">
+            <div class="skeleton" style="height: 85px; border-radius: 10px;"></div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 p-3">
+        <div class="skeleton mb-3" style="height: 25px; width: 30%;"></div> <div class="skeleton mb-2" style="height: 50px; border-radius: 5px;"></div> <div class="skeleton mb-2" style="height: 50px; border-radius: 5px;"></div> <div class="skeleton mb-2" style="height: 50px; border-radius: 5px;"></div> <div class="skeleton mb-2" style="height: 50px; border-radius: 5px;"></div> </div>
+</div>
 
 <div class="d-flex justify-content-between align-items-center bg-white p-3 shadow-sm rounded mb-4 border">
     <a href="index.php?mes=<?= $mes_ant ?>&ano=<?= $ano_ant ?>" class="btn btn-outline-primary rounded-pill">

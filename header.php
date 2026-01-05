@@ -71,6 +71,28 @@
         <?php if ($pagina_atual == 'nova-conta.php'): ?>
             .fab { display: none; }
         <?php endif; ?>
+
+                /* Estilo do Skeleton */
+        .skeleton {
+            background-color: #e2e5e7;
+            background-image: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
+            background-size: 200px 100%;
+            background-repeat: no-repeat;
+            display: inline-block;
+            line-height: 1;
+            width: 100%;
+            animation: skeleton-loading 1.5s infinite;
+        }
+
+        @keyframes skeleton-loading {
+            0% { background-position: -200px 0; }
+            100% { background-position: calc(200px + 100%) 0; }
+        }
+
+        /* Esconde o conteúdo real enquanto o skeleton aparece (opcional para transições) */
+        .loading-hidden {
+            display: none !important;
+        }
     </style>
 </head>
 <body class="bg-light pb-5"> 

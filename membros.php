@@ -24,6 +24,35 @@ $membros = $pdo->query("SELECT * FROM family_members ORDER BY name ASC")->fetchA
 include 'header.php'; 
 ?>
 
+
+<div id="skeleton-loader" class="d-none">
+    <div class="row g-3 mt-1"> 
+        <div class="col-12 col-md-4">
+            <div class="card p-4 shadow-sm border-0">
+                <div class="skeleton mb-3" style="height: 25px; width: 60%;"></div>
+                <div class="skeleton mb-2" style="height: 15px; width: 30%;"></div>
+                <div class="skeleton mb-3" style="height: 45px; border-radius: 8px;"></div>
+                <div class="skeleton mb-2" style="height: 15px; width: 30%;"></div>
+                <div class="skeleton mb-4" style="height: 45px; border-radius: 8px;"></div>
+                <div class="skeleton" style="height: 45px; border-radius: 8px;"></div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white py-3 border-0">
+                    <div class="skeleton" style="height: 25px; width: 30%;"></div>
+                </div>
+                <div class="p-3">
+                    <div class="skeleton mb-3" style="height: 50px; border-radius: 5px;"></div>
+                    <div class="skeleton mb-3" style="height: 50px; border-radius: 5px;"></div>
+                    <div class="skeleton mb-3" style="height: 50px; border-radius: 5px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row g-3"> 
     
     <div class="col-12 col-md-4">

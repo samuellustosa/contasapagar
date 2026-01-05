@@ -63,6 +63,31 @@ foreach ($membros as $index => $m) {
 }
 ?>
 
+<div id="skeleton-loader" class="d-none">
+    <div class="skeleton mb-4" style="height: 70px; border-radius: 10px; width: 100%;"></div>
+
+    <div class="d-flex justify-content-between mb-4">
+        <div class="skeleton" style="height: 35px; width: 40%;"></div>
+        <div class="skeleton" style="height: 35px; width: 20%;"></div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card p-4 shadow-sm border-0">
+                <div class="skeleton mx-auto" style="height: 250px; width: 250px; border-radius: 50%;"></div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card p-3 shadow-sm border-0">
+                <div class="skeleton mb-3" style="height: 20px; width: 50%;"></div>
+                <div class="skeleton mb-4" style="height: 40px; border-radius: 5px;"></div>
+                <div class="skeleton mb-4" style="height: 40px; border-radius: 5px;"></div>
+                <div class="skeleton mb-4" style="height: 40px; border-radius: 5px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="d-flex justify-content-between align-items-center bg-white p-3 shadow-sm rounded mb-4 border mt-3">
     <a href="relatorios.php?mes=<?= $mes_ant ?>&ano=<?= $ano_ant ?>" class="btn btn-outline-primary rounded-pill">
         &larr; <span class="d-none d-md-inline">Anterior</span>
