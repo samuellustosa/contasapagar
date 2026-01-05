@@ -1,6 +1,13 @@
-# Ignorar configurações do banco de dados (se tiver senhas reais futuramente)
-# config.php 
+# Ignorar ficheiros de configuração com senhas reais
+config.php
 
-# Arquivos do sistema
-#.DS_Store
-#Thumbs.db
+# Ignorar a pasta de dependências (PHPMailer)
+vendor/
+vendor.zip
+
+# Ignorar ficheiros do sistema
+.DS_Store
+Thumbs.db
+
+# Ignorar ficheiros de log de erro
+*.log
