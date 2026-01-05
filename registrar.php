@@ -31,11 +31,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $mail->isSMTP();
             $mail->Host       = 'smtp.gmail.com';
             $mail->SMTPAuth   = true;
-            $mail->Username   = 'samuelllsousa579@gmail.com'; 
-            $mail->Password   = 'awsm afot iswb gyjf'; 
+            $mail->Username   = getenv('SMTP_USER'); 
+            $mail->Password   = getenv('SMTP_PASS'); 
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port       = 587;
-            $mail->CharSet    = 'UTF-8';
+            $mail->Port       = 587;;
 
             $mail->setFrom('samuelllsousa579@gmail.com', 'Sistema de Contas');
             $mail->addAddress($email);
