@@ -5,15 +5,6 @@ $base = "/contasapagar/public";
 ?>
 
 <div class="container mt-3">
-    <div id="skeleton-loader" class="d-none">
-        <div class="skeleton mb-4" style="height: 70px; border-radius: 10px; width: 100%;"></div>
-        <div class="row text-center mb-4 g-2"> 
-            <div class="col-4"><div class="skeleton" style="height: 85px; border-radius: 10px;"></div></div>
-            <div class="col-4"><div class="skeleton" style="height: 85px; border-radius: 10px;"></div></div>
-            <div class="col-4"><div class="skeleton" style="height: 85px; border-radius: 10px;"></div></div>
-        </div>
-    </div>
-
     <div class="d-flex justify-content-between align-items-center bg-white p-3 shadow-sm rounded mb-4 border">
         <a href="<?= $base ?>/home?mes=<?= $mes_ant ?>&ano=<?= $ano_ant ?>" class="btn btn-outline-primary rounded-pill">
             &larr; <span class="d-none d-md-inline">Anterior</span>

@@ -14,8 +14,6 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('fetch', event => {
-  // Estratégia: Tenta sempre a rede primeiro para garantir dados atualizados.
-  // Se estiver sem internet, ele tenta buscar o que tem no cache.
   event.respondWith(
     fetch(event.request).catch(() => caches.match(event.request))
   );

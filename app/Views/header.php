@@ -22,7 +22,8 @@
             background-color: #e2e5e7; 
             background-image: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0)); 
             background-size: 200px 100%; 
-            animation: skeleton-loading 1.5s infinite; 
+            animation: skeleton-loading 1.5s infinite;
+            display: block; /* Importante para garantir visibilidade */
         }
         @keyframes skeleton-loading { 0% { background-position: -200px 0; } 100% { background-position: calc(200px + 100%) 0; } }
         

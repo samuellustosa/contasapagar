@@ -5,26 +5,30 @@
     const skeleton = document.getElementById('skeleton-loader');
     const mainContent = document.getElementById('main-content');
 
+    // Função para mostrar o loader e esconder o conteúdo
     function showLoader() {
       if (skeleton && mainContent) {
-        skeleton.classList.remove('d-none');
-        mainContent.classList.add('content-hidden');
+        skeleton.classList.remove('d-none'); // Remove a classe que esconde o skeleton
+        mainContent.classList.add('content-hidden'); // Adiciona a classe que esconde o conteúdo real
+        window.scrollTo(0, 0); // Garante que a transição comece do topo da página
       }
     }
 
-    // 1. Auto-close alerts
+    // 1. Fechamento automático de alertas (mensagens de sucesso/erro)
     const alerts = document.querySelectorAll('.alert');
     alerts.forEach(function(alert) {
       setTimeout(() => {
         const bsAlert = new bootstrap.Alert(alert);
         bsAlert.close();
-      }, 3500);
+      }, 3000); // Reduzido para 3 segundos para uma resposta mais rápida
     });
 
-    // 2. Ativar Skeleton em links (exceto ações de excluir/pagar)
+    // 2. Ativar Skeleton ao clicar em links (navegação interna)
     document.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', function(e) {
         const href = this.getAttribute('href');
+        
+        // Filtra links que não devem disparar o loader (âncoras, exclusões e botões de pagamento)
         if (href && !href.startsWith('#') && 
             !this.classList.contains('btn-outline-danger') && 
             !href.includes('pagar') && 
@@ -34,14 +38,13 @@
       });
     });
 
-    // 3. Ativar Skeleton ao enviar formulários
+
     document.querySelectorAll('form').forEach(form => {
       form.addEventListener('submit', function() {
         showLoader();
       });
     });
 
-    // 4. Service Worker PWA
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/contasapagar/public/sw.js')
         .then(reg => console.log('PWA: Service Worker ativo'))
