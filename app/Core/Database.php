@@ -9,7 +9,7 @@ class Database {
 
     public static function getConnection() {
         if (self::$instance === null) {
-            // Configurações do seu XAMPP Local
+            
             $host = 'localhost'; 
             $db   = 'contass'; 
             $user = 'root';      

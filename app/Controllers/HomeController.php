@@ -6,10 +6,14 @@ use DateTime;
 
 class HomeController {
     public function index() {
+        // Define a base do localhost para redirecionamentos
+        $base = "/contasapagar/public";
+
         if (session_status() === PHP_SESSION_NONE) session_start();
         
+        // Correção da URL de redirecionamento para o login
         if (!isset($_SESSION['logado'])) {
-            header("Location: /login");
+            header("Location: $base/login");
             exit;
         }
 
@@ -46,21 +50,29 @@ class HomeController {
     }
 
     public function pagar() {
+        $base = "/contasapagar/public";
         $id = $_GET['id'] ?? null;
+        
         if ($id) {
             $debtModel = new Debt();
             $debtModel->togglePayment($id);
-            header("Location: /home?mes=" . ($_GET['mes'] ?? date('m')) . "&ano=" . ($_GET['ano'] ?? date('Y')));
+            
+            // Correção do redirecionamento após marcar como pago
+            header("Location: $base/home?mes=" . ($_GET['mes'] ?? date('m')) . "&ano=" . ($_GET['ano'] ?? date('Y')));
             exit;
         }
     }
 
     public function excluir() {
+        $base = "/contasapagar/public";
         $id = $_GET['id'] ?? null;
+        
         if ($id) {
             $debtModel = new Debt();
             $debtModel->delete($id);
-            header("Location: /home?msg=excluido");
+            
+            // Correção do redirecionamento após excluir
+            header("Location: $base/home?msg=excluido");
             exit;
         }
     }

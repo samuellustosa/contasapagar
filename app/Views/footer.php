@@ -43,5 +43,13 @@
   }
 </script>
 
+<footer class="container mt-5 mb-4">
+    <div class="border-top pt-3 text-center">
+        <small class="text-secondary" style="font-size: 0.8rem; letter-spacing: 0.5px;">
+            PRODUZIDO POR <strong class="text-dark">SAMUEL LUSTOSA</strong>
+        </small>
+    </div>
+</footer>
+
 </body>
 </html>

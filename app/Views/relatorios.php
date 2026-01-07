@@ -1,13 +1,22 @@
-<?php include 'header.php'; ?>
+<?php 
+include 'header.php'; 
+$base = "/contasapagar/public"; 
+?>
 
 <div class="container mt-3">
     <div class="d-flex justify-content-between align-items-center bg-white p-3 shadow-sm rounded mb-4 border">
-        <a href="/relatorios?mes=<?= $mes_ant ?? date('m') ?>&ano=<?= $ano_ant ?? date('Y') ?>" class="btn btn-outline-primary rounded-pill">&larr; Anterior</a>
+        <a href="<?= $base ?>/relatorios?mes=<?= $mes_ant ?>&ano=<?= $ano_ant ?>" class="btn btn-outline-primary rounded-pill">
+            &larr; <span class="d-none d-md-inline">Anterior</span>
+        </a>
+        
         <div class="text-center">
-            <h5 class="mb-0 fw-bold">Relatórios Detalhados</h5>
-            <small class="text-muted"><?= $ano_selecionado ?? date('Y') ?></small>
+            <h5 class="mb-0 fw-bold"><?= $meses_nome[$mes_selecionado] ?></h5>
+            <small class="text-muted"><?= $ano_selecionado ?></small>
         </div>
-        <a href="/relatorios?mes=<?= $mes_prox ?? date('m') ?>&ano=<?= $ano_prox ?? date('Y') ?>" class="btn btn-outline-primary rounded-pill">Próximo &rarr;</a>
+
+        <a href="<?= $base ?>/relatorios?mes=<?= $mes_prox ?>&ano=<?= $ano_prox ?>" class="btn btn-outline-primary rounded-pill">
+            <span class="d-none d-md-inline">Próximo</span> &rarr;
+        </a>
     </div>
 
     <div class="row">
@@ -33,7 +42,7 @@
                     <?php else: ?>
                         <?php foreach ($dados_relatorio as $item): 
                             $total_geral = array_sum(array_column($dados_relatorio, 'total_pessoa'));
-                            $porcentagem = ($item['total_pessoa'] / $total_geral) * 100;
+                            $porcentagem = ($total_geral > 0) ? ($item['total_pessoa'] / $total_geral) * 100 : 0;
                         ?>
                             <div class="mb-4">
                                 <div class="d-flex justify-content-between align-items-center mb-1">

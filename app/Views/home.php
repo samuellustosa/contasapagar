@@ -1,4 +1,8 @@
-<?php include 'header.php'; ?>
+<?php 
+include 'header.php'; 
+// Define a base para o localhost
+$base = "/contasapagar/public"; 
+?>
 
 <div class="container mt-3">
     <div id="skeleton-loader" class="d-none">
@@ -11,7 +15,7 @@
     </div>
 
     <div class="d-flex justify-content-between align-items-center bg-white p-3 shadow-sm rounded mb-4 border">
-        <a href="/home?mes=<?= $mes_ant ?>&ano=<?= $ano_ant ?>" class="btn btn-outline-primary rounded-pill">
+        <a href="<?= $base ?>/home?mes=<?= $mes_ant ?>&ano=<?= $ano_ant ?>" class="btn btn-outline-primary rounded-pill">
             &larr; <span class="d-none d-md-inline">Anterior</span>
         </a>
         
@@ -20,7 +24,7 @@
             <small class="text-muted"><?= $ano_selecionado ?></small>
         </div>
 
-        <a href="/home?mes=<?= $mes_prox ?>&ano=<?= $ano_prox ?>" class="btn btn-outline-primary rounded-pill">
+        <a href="<?= $base ?>/home?mes=<?= $mes_prox ?>&ano=<?= $ano_prox ?>" class="btn btn-outline-primary rounded-pill">
             <span class="d-none d-md-inline">Próximo</span> &rarr;
         </a>
     </div>
@@ -72,10 +76,10 @@
                             </td>
                             <td class="text-end pe-4">
                                 <div class="d-flex justify-content-end gap-2">
-                                    <a href="/pagar?id=<?= $c['id'] ?>&mes=<?= $mes_selecionado ?>&ano=<?= $ano_selecionado ?>" class="btn btn-sm btn-light border">
+                                    <a href="<?= $base ?>/pagar?id=<?= $c['id'] ?>&mes=<?= $mes_selecionado ?>&ano=<?= $ano_selecionado ?>" class="btn btn-sm btn-light border">
                                         <?= $c['is_paid'] ? 'Desmarcar' : 'Pagar' ?>
                                     </a>
-                                    <a href="/excluir-conta?id=<?= $c['id'] ?>&mes=<?= $mes_selecionado ?>&ano=<?= $ano_selecionado ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Deseja excluir esta conta?')">
+                                    <a href="<?= $base ?>/excluir-conta?id=<?= $c['id'] ?>&mes=<?= $mes_selecionado ?>&ano=<?= $ano_selecionado ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Deseja excluir esta conta?')">
                                         Excluir
                                     </a>
                                 </div>
@@ -102,10 +106,10 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <?= $c['is_paid'] ? '<span class="badge bg-success">Pago</span>' : '<span class="badge bg-warning text-dark">Pendente</span>' ?>
                     <div class="btn-group gap-2">
-                        <a href="/pagar?id=<?= $c['id'] ?>&mes=<?= $mes_selecionado ?>&ano=<?= $ano_selecionado ?>" class="btn btn-sm btn-light border">
+                        <a href="<?= $base ?>/pagar?id=<?= $c['id'] ?>&mes=<?= $mes_selecionado ?>&ano=<?= $ano_selecionado ?>" class="btn btn-sm btn-light border">
                             <?= $c['is_paid'] ? 'Desmarcar' : 'Pagar' ?>
                         </a>
-                        <a href="/excluir-conta?id=<?= $c['id'] ?>&mes=<?= $mes_selecionado ?>&ano=<?= $ano_selecionado ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Deseja excluir?')">
+                        <a href="<?= $base ?>/excluir-conta?id=<?= $c['id'] ?>&mes=<?= $mes_selecionado ?>&ano=<?= $ano_selecionado ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Deseja excluir?')">
                             Excluir
                         </a>
                     </div>

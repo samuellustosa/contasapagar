@@ -1,3 +1,10 @@
+<?php 
+// Define a base para o localhost
+$base = "/contasapagar/public"; 
+
+// Garante que a variável $msg exista para não dar erro de "undefined variable"
+$msg = $msg ?? ''; 
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -48,9 +55,13 @@
             <p class="text-muted small">Registe-se para organizar os seus gastos</p>
         </div>
 
-        <?= $msg ?>
+        <?php if($msg): ?>
+            <div class="alert alert-info small py-2 text-center">
+                <?= $msg ?>
+            </div>
+        <?php endif; ?>
 
-        <form method="POST">
+        <form method="POST" action="<?= $base ?>/registrar">
             <div class="mb-3">
                 <label class="form-label small fw-bold">E-mail</label>
                 <input type="email" name="email" class="form-control" placeholder="exemplo@gmail.com" required>
@@ -62,7 +73,7 @@
             <button class="btn btn-success w-100 shadow-sm">Registar</button>
             
             <div class="mt-4 text-center">
-                <a href="login.php" class="text-decoration-none small fw-bold">Já tenho uma conta (Login)</a>
+                <a href="<?= $base ?>/login" class="text-decoration-none small fw-bold">Já tenho uma conta (Login)</a>
             </div>
         </form>
     </div>
@@ -71,5 +82,6 @@
         <p class="footer-text">Produzido por <strong>Samuel Lustosa</strong></p>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

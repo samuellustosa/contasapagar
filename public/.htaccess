@@ -1,8 +1,6 @@
 RewriteEngine On
-
-# Se o seu projeto estiver em uma subpasta como htdocs/contas/public, 
-# descomente a linha abaixo e ajuste o caminho:
-# RewriteBase /nome-da-sua-pasta/public/
+# Define que o ponto de partida é a sua pasta de projeto
+RewriteBase /contasapagar/public/
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

@@ -1,5 +1,6 @@
 <?php
 require_once '../vendor/autoload.php';
+session_start(); // Inicia aqui para valer em todo o site
 
 use App\Controllers\HomeController;
 use App\Controllers\MemberController;
@@ -23,6 +24,9 @@ switch ($url) {
         break;
     case 'membros':
         (new MemberController())->index();
+        break;
+    case 'excluir-membro': // ROTA ADICIONADA
+        (new MemberController())->excluir();
         break;
     case 'nova-conta':
         (new DebtController())->create();

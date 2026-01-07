@@ -1,11 +1,15 @@
-<?php include 'header.php'; ?>
+<?php 
+include 'header.php'; 
+// Define a base para o localhost
+$base = "/contasapagar/public"; 
+?>
 
 <div class="container mt-3">
     <div class="row g-3"> 
         <div class="col-12 col-md-4">
             <div class="card p-3 p-md-4 shadow-sm border-0 h-100">
                 <h5 class="mb-3">Novo Membro</h5>
-                <form method="POST" action="/membros">
+                <form method="POST" action="<?= $base ?>/membros">
                     <input type="hidden" name="add_member" value="1">
                     <div class="mb-3">
                         <label class="form-label text-muted small">Nome</label>
@@ -47,7 +51,7 @@
                                     <td class="ps-3" style="font-size: 1.5rem;"><?= $m['emoji'] ?></td>
                                     <td><strong><?= $m['name'] ?></strong></td>
                                     <td class="text-end pe-3">
-                                        <a href="/excluir-membro?id=<?= $m['id'] ?>" 
+                                        <a href="<?= $base ?>/excluir-membro?id=<?= $m['id'] ?>" 
                                            class="btn btn-sm btn-outline-danger rounded-pill" 
                                            onclick="return confirm('Excluir membro?')">Excluir</a>
                                     </td>
