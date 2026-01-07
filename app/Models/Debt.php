@@ -11,22 +11,21 @@ class Debt {
         $this->db = Database::getConnection();
     }
 
-    // Busca as contas do usuário logado incluindo os nomes dos devedores
+    // Busca as contas do usuário logado incluindo apenas os nomes dos devedores (sem emoji)
     public function getMonthlyDebts($mes, $ano, $user_id) {
-    // Removido o m.emoji da concatenação
-    $sql = "SELECT d.*, 
-            GROUP_CONCAT(m.name SEPARATOR ', ') as devedores
-            FROM debts d
-            LEFT JOIN debt_members dm ON d.id = dm.debt_id
-            LEFT JOIN family_members m ON dm.member_id = m.id
-            WHERE MONTH(d.due_date) = ? AND YEAR(d.due_date) = ? AND d.user_id = ?
-            GROUP BY d.id
-            ORDER BY d.due_date ASC";
+        $sql = "SELECT d.*, 
+                GROUP_CONCAT(m.name SEPARATOR ', ') as devedores
+                FROM debts d
+                LEFT JOIN debt_members dm ON d.id = dm.debt_id
+                LEFT JOIN family_members m ON dm.member_id = m.id
+                WHERE MONTH(d.due_date) = ? AND YEAR(d.due_date) = ? AND d.user_id = ?
+                GROUP BY d.id
+                ORDER BY d.due_date ASC";
 
-    $stmt = $this->db->prepare($sql);
-    $stmt->execute([$mes, $ano, $user_id]);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$mes, $ano, $user_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     // Calcula os totais filtrando pelo usuário logado
     public function getTotals($mes, $ano, $user_id) {
@@ -47,7 +46,7 @@ class Debt {
         ];
     }
 
-    // Deleta apenas se a conta pertencer ao usuário logado (segurança extra)
+    // Deleta apenas se a conta pertencer ao usuário logado
     public function delete($id, $user_id) {
         $stmt = $this->db->prepare("DELETE FROM debts WHERE id = ? AND user_id = ?");
         return $stmt->execute([$id, $user_id]);
@@ -90,5 +89,21 @@ class Debt {
     public function togglePayment($id, $user_id) {
         $stmt = $this->db->prepare("UPDATE debts SET is_paid = NOT is_paid WHERE id = ? AND user_id = ?");
         return $stmt->execute([$id, $user_id]);
+    }
+
+    // Busca detalhes de todos os membros para o Relatório Geral em PDF
+    public function getAllMemberDebtsDetail($mes, $ano, $user_id) {
+        $sql = "SELECT m.name as member_name, d.name as debt_name, d.amount,
+                (SELECT COUNT(*) FROM debt_members dm2 WHERE dm2.debt_id = d.id) as total_participants
+                FROM family_members m
+                JOIN debt_members dm ON m.id = dm.member_id
+                JOIN debts d ON dm.debt_id = d.id
+                WHERE MONTH(d.due_date) = ? AND YEAR(d.due_date) = ? AND d.user_id = ?
+                ORDER BY m.name ASC, d.name ASC";
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$mes, $ano, $user_id]);
+        // O FETCH_GROUP agrupa os resultados pelo primeiro campo (member_name)
+        return $stmt->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_ASSOC); 
     }
 }

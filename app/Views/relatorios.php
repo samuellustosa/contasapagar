@@ -19,6 +19,13 @@ $base = "";
         </a>
     </div>
 
+    <div class="text-end mb-3">
+        <a href="<?= $base ?>/relatorio-geral-pdf?mes=<?= $mes_selecionado ?>&ano=<?= $ano_selecionado ?>" 
+           class="btn btn-danger shadow-sm fw-bold" target="_blank">
+            <i class="bi bi-file-pdf"></i> Gerar Comprovante Geral (PDF)
+        </a>
+    </div>
+
     <div class="row">
         <div class="col-md-6 mb-4">
             <div class="card shadow-sm border-0 h-100">
@@ -68,7 +75,6 @@ $base = "";
         new Chart(ctx, {
             type: 'doughnut',
             data: {
-                // Nomes protegidos para o gráfico
                 labels: <?= json_encode(array_map('htmlspecialchars', array_column($dados_relatorio, 'name'))) ?>,
                 datasets: [{
                     data: <?= json_encode(array_column($dados_relatorio, 'total_pessoa')) ?>,
