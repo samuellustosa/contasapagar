@@ -1,48 +1,53 @@
 </div> <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-  // 1. Faz as mensagens de alerta sumirem sozinhas com animação suave
   document.addEventListener('DOMContentLoaded', function() {
+    const skeleton = document.getElementById('skeleton-loader');
+    const mainContent = document.getElementById('main-content');
+
+    function showLoader() {
+      if (skeleton && mainContent) {
+        skeleton.classList.remove('d-none');
+        mainContent.classList.add('content-hidden');
+      }
+    }
+
+    // 1. Auto-close alerts
     const alerts = document.querySelectorAll('.alert');
     alerts.forEach(function(alert) {
-      setTimeout(function() {
+      setTimeout(() => {
         const bsAlert = new bootstrap.Alert(alert);
         bsAlert.close();
-      }, 3500); // 3.5 segundos para dar tempo de leitura
+      }, 3500);
     });
-  });
 
-  // 2. Lógica do Skeleton Screen Otimizada
-  const navLinks = document.querySelectorAll('.nav-link, .btn-outline-primary, .fab');
-  const skeleton = document.getElementById('skeleton-loader');
-
-  navLinks.forEach(link => {
-    link.addEventListener('click', function(e) {
-      // Verifica se o link não é apenas um botão de ação (como excluir ou pagar)
-      if (!this.classList.contains('btn-outline-danger') && !this.href.includes('pagar')) {
-        if (skeleton) {
-          skeleton.classList.remove('d-none');
-          
-          // Esconde o conteúdo principal para destacar o loading
-          const mainContent = document.querySelector('.row, .card, .table-responsive');
-          if (mainContent) {
-            mainContent.style.transition = 'opacity 0.2s';
-            mainContent.style.opacity = '0';
-          }
+    // 2. Ativar Skeleton em links (exceto ações de excluir/pagar)
+    document.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if (href && !href.startsWith('#') && 
+            !this.classList.contains('btn-outline-danger') && 
+            !href.includes('pagar') && 
+            !href.includes('excluir')) {
+          showLoader();
         }
-      }
+      });
     });
-  });
 
-  // 3. Registro do Service Worker para PWA (Melhorado com caminho dinâmico)
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      // O uso de "/" garante que o SW seja buscado na raiz do diretório público
-      navigator.serviceWorker.register('/contasapagar/public/sw.js')
-        .then(reg => console.log('PWA: Service Worker ativo para o escopo:', reg.scope))
-        .catch(err => console.error('PWA: Falha ao registrar SW:', err));
+    // 3. Ativar Skeleton ao enviar formulários
+    document.querySelectorAll('form').forEach(form => {
+      form.addEventListener('submit', function() {
+        showLoader();
+      });
     });
-  }
+
+    // 4. Service Worker PWA
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/contasapagar/public/sw.js')
+        .then(reg => console.log('PWA: Service Worker ativo'))
+        .catch(err => console.error('PWA: Falha ao registrar SW', err));
+    }
+  });
 </script>
 
 <footer class="container mt-5 mb-4">
