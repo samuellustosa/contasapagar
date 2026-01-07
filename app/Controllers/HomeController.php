@@ -6,31 +6,32 @@ use DateTime;
 
 class HomeController {
     public function index() {
-        // Define a base do localhost para redirecionamentos
         $base = "/contasapagar/public";
 
         if (session_status() === PHP_SESSION_NONE) session_start();
         
-        // Correção da URL de redirecionamento para o login
         if (!isset($_SESSION['logado'])) {
             header("Location: $base/login");
             exit;
         }
 
+        // Pega o ID do usuário logado na sessão
+        $user_id = $_SESSION['user_id'];
         $debtModel = new Debt();
+        
         $mes_selecionado = $_GET['mes'] ?? date('m');
         $ano_selecionado = $_GET['ano'] ?? date('Y');
 
-        // Lógica das setas para navegação entre meses
         $data_atual = new DateTime("$ano_selecionado-$mes_selecionado-01");
         $anterior = clone $data_atual;
         $anterior->modify('-1 month');
         $proximo = clone $data_atual;
         $proximo->modify('+1 month');
 
+        // Passa o user_id para os métodos do Model para filtrar apenas os dados dele
         $data = [
-            'contas' => $debtModel->getMonthlyDebts($mes_selecionado, $ano_selecionado),
-            'resumo' => $debtModel->getTotals($mes_selecionado, $ano_selecionado),
+            'contas' => $debtModel->getMonthlyDebts($mes_selecionado, $ano_selecionado, $user_id),
+            'resumo' => $debtModel->getTotals($mes_selecionado, $ano_selecionado, $user_id),
             'mes_selecionado' => $mes_selecionado,
             'ano_selecionado' => $ano_selecionado,
             'mes_ant' => $anterior->format('m'),
@@ -44,34 +45,37 @@ class HomeController {
             ]
         ];
 
-        // Extrai as variáveis para a view as reconhecer diretamente
         extract($data);
         require_once '../app/Views/home.php';
     }
 
     public function pagar() {
+        if (session_status() === PHP_SESSION_NONE) session_start();
         $base = "/contasapagar/public";
         $id = $_GET['id'] ?? null;
+        $user_id = $_SESSION['user_id'];
         
         if ($id) {
             $debtModel = new Debt();
-            $debtModel->togglePayment($id);
+            // Só altera o pagamento se a conta pertencer ao usuário logado
+            $debtModel->togglePayment($id, $user_id);
             
-            // Correção do redirecionamento após marcar como pago
             header("Location: $base/home?mes=" . ($_GET['mes'] ?? date('m')) . "&ano=" . ($_GET['ano'] ?? date('Y')));
             exit;
         }
     }
 
     public function excluir() {
+        if (session_status() === PHP_SESSION_NONE) session_start();
         $base = "/contasapagar/public";
         $id = $_GET['id'] ?? null;
+        $user_id = $_SESSION['user_id'];
         
         if ($id) {
             $debtModel = new Debt();
-            $debtModel->delete($id);
+            // Só deleta se a conta for do usuário logado
+            $debtModel->delete($id, $user_id);
             
-            // Correção do redirecionamento após excluir
             header("Location: $base/home?msg=excluido");
             exit;
         }

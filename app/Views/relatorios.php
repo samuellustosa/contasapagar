@@ -10,7 +10,7 @@ $base = "/contasapagar/public";
         </a>
         
         <div class="text-center">
-            <h5 class="mb-0 fw-bold"><?= $meses_nome[$mes_selecionado] ?></h5>
+            <h5 class="mb-0 fw-bold"><?= htmlspecialchars($meses_nome[$mes_selecionado]) ?></h5>
             <small class="text-muted"><?= $ano_selecionado ?></small>
         </div>
 
@@ -46,7 +46,7 @@ $base = "/contasapagar/public";
                         ?>
                             <div class="mb-4">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <span><?= $item['emoji'] ?> <strong><?= $item['name'] ?></strong></span>
+                                    <span><?= htmlspecialchars($item['emoji']) ?> <strong><?= htmlspecialchars($item['name']) ?></strong></span>
                                     <span class="text-muted">R$ <?= number_format($item['total_pessoa'], 2, ',', '.') ?> (<?= round($porcentagem) ?>%)</span>
                                 </div>
                                 <div class="progress" style="height: 10px;">
@@ -68,7 +68,8 @@ $base = "/contasapagar/public";
         new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: <?= json_encode(array_column($dados_relatorio, 'name')) ?>,
+                // Nomes protegidos para o gráfico
+                labels: <?= json_encode(array_map('htmlspecialchars', array_column($dados_relatorio, 'name'))) ?>,
                 datasets: [{
                     data: <?= json_encode(array_column($dados_relatorio, 'total_pessoa')) ?>,
                     backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b'],

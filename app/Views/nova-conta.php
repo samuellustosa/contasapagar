@@ -8,6 +8,8 @@ $base = "/contasapagar/public";
     <h3 class="fw-bold mb-4">Nova Conta</h3>
     
     <form method="POST" action="<?= $base ?>/nova-conta">
+        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
+        
         <div class="mb-3">
             <label class="form-label small fw-bold">Nome da Conta</label>
             <input type="text" name="name" class="form-control" placeholder="Ex: Aluguel, Luz..." required>
@@ -32,7 +34,7 @@ $base = "/contasapagar/public";
                     <div class="form-check mb-2">
                         <input class="form-check-input" type="checkbox" name="debtors[]" value="<?= $m['id'] ?>" id="membro_<?= $m['id'] ?>">
                         <label class="form-check-label" for="membro_<?= $m['id'] ?>">
-                            <?= $m['emoji'] ?> <?= $m['name'] ?>
+                            <?= htmlspecialchars($m['emoji']) ?> <?= htmlspecialchars($m['name']) ?>
                         </label>
                     </div>
                 <?php endforeach; ?>

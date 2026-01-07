@@ -1,6 +1,5 @@
 <?php
 namespace App\Models;
-
 use App\Core\Database;
 use PDO;
 
@@ -11,18 +10,22 @@ class Member {
         $this->db = Database::getConnection();
     }
 
-    public function getAll() {
-        $stmt = $this->db->query("SELECT * FROM family_members ORDER BY name ASC");
+    // LISTAR: Agora filtra por user_id
+    public function getAll($user_id) {
+        $stmt = $this->db->prepare("SELECT * FROM family_members WHERE user_id = ? ORDER BY name ASC");
+        $stmt->execute([$user_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function create($name, $emoji) {
-        $stmt = $this->db->prepare("INSERT INTO family_members (name, emoji) VALUES (:name, :emoji)");
-        return $stmt->execute([':name' => $name, ':emoji' => $emoji]);
+    // CRIAR: Agora salva o user_id
+    public function create($name, $emoji, $user_id) {
+        $stmt = $this->db->prepare("INSERT INTO family_members (name, emoji, user_id) VALUES (?, ?, ?)");
+        return $stmt->execute([$name, $emoji, $user_id]);
     }
 
-    public function delete($id) {
-        $stmt = $this->db->prepare("DELETE FROM family_members WHERE id = ?");
-        return $stmt->execute([$id]);
+    // EXCLUIR: Só exclui se o membro pertencer ao usuário
+    public function delete($id, $user_id) {
+        $stmt = $this->db->prepare("DELETE FROM family_members WHERE id = ? AND user_id = ?");
+        return $stmt->execute([$id, $user_id]);
     }
 }

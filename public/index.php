@@ -25,7 +25,7 @@ switch ($url) {
     case 'membros':
         (new MemberController())->index();
         break;
-    case 'excluir-membro': // ROTA ADICIONADA
+    case 'excluir-membro':
         (new MemberController())->excluir();
         break;
     case 'nova-conta':

@@ -10,41 +10,16 @@ $msg = $msg ?? '';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
     <meta name="apple-mobile-web-app-title" content="Contas">
     <meta name="application-name" content="Contas">
-    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>Criar Conta - Contas a Pagar</title>
     <style>
-        body {
-            background-color: #0d6efd;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            justify-content: center;
-            align-items: center;
-        }
-        .register-card {
-            width: 90%;
-            max-width: 400px;
-            border-radius: 15px;
-            border: none;
-        }
-        .form-control {
-            padding: 12px;
-            font-size: 16px;
-        }
-        .btn-success {
-            padding: 12px;
-            font-weight: bold;
-            border-radius: 8px;
-        }
-        .footer-text {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.85rem;
-            margin-top: 20px;
-        }
+        body { background-color: #0d6efd; display: flex; flex-direction: column; min-height: 100vh; justify-content: center; align-items: center; }
+        .register-card { width: 90%; max-width: 400px; border-radius: 15px; border: none; }
+        .form-control { padding: 12px; font-size: 16px; }
+        .btn-success { padding: 12px; font-weight: bold; border-radius: 8px; }
+        .footer-text { color: rgba(255, 255, 255, 0.8); font-size: 0.85rem; margin-top: 20px; }
     </style>
 </head>
 <body class="p-3">
@@ -56,18 +31,18 @@ $msg = $msg ?? '';
         </div>
 
         <?php if($msg): ?>
-            <div class="alert alert-info small py-2 text-center">
-                <?= $msg ?>
+            <div class="alert alert-info small py-2 text-center shadow-sm">
+                <?= htmlspecialchars($msg) ?>
             </div>
         <?php endif; ?>
 
         <form method="POST" action="<?= $base ?>/registrar">
             <div class="mb-3">
-                <label class="form-label small fw-bold">E-mail</label>
+                <label class="form-label small fw-bold text-secondary">E-mail</label>
                 <input type="email" name="email" class="form-control" placeholder="exemplo@gmail.com" required>
             </div>
             <div class="mb-3">
-                <label class="form-label small fw-bold">Escolha uma Senha</label>
+                <label class="form-label small fw-bold text-secondary">Escolha uma Senha</label>
                 <input type="password" name="senha" class="form-control" placeholder="••••••••" required>
             </div>
             <button class="btn btn-success w-100 shadow-sm">Registar</button>

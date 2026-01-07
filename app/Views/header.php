@@ -21,22 +21,30 @@
     </style>
 </head>
 <body class="bg-light pb-5"> 
-    <nav class="navbar navbar-dark bg-primary shadow-sm py-3 fixed-top">
-        <div class="container d-flex justify-content-between align-items-center">
-            <span class="navbar-brand mb-0 h1">Contas a Pagar</span>
-            <a href="/contasapagar/public/logout" class="btn btn-sm btn-outline-light">Sair</a>
-        </div>
-    </nav>
 
     <?php 
+        // Inicia a sessão se ainda não estiver ativa
+        if (session_status() === PHP_SESSION_NONE) session_start();
+
+        // SEGURANÇA: Gera o token CSRF se ele não existir na sessão
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+
         $uri = $_SERVER['REQUEST_URI'];
         $m = $_GET['mes'] ?? '';
         $a = $_GET['ano'] ?? '';
         $query = ($m && $a) ? "?mes=$m&ano=$a" : "";
         
-        // Define a URL base para facilitar
         $base = "/contasapagar/public";
     ?>
+
+    <nav class="navbar navbar-dark bg-primary shadow-sm py-3 fixed-top">
+        <div class="container d-flex justify-content-between align-items-center">
+            <span class="navbar-brand mb-0 h1">Contas a Pagar</span>
+            <a href="<?= $base ?>/logout" class="btn btn-sm btn-outline-light">Sair</a>
+        </div>
+    </nav>
 
     <div class="sticky-menu">
         <div class="d-flex justify-content-center pt-3">
@@ -54,8 +62,14 @@
         <?php if (isset($_GET['msg'])): ?>
             <div class="alert alert-success alert-dismissible fade show mt-3 shadow-sm" role="alert">
                 <?php
-                    $mensagens = ['sucesso' => 'Sucesso!', 'excluido' => 'Removido!', 'membro_add' => 'Membro adicionado!'];
-                    echo $mensagens[$_GET['msg']] ?? 'Ação concluída!';
+                    $mensagens = [
+                        'sucesso' => 'Sucesso!', 
+                        'excluido' => 'Removido!', 
+                        'membro_add' => 'Membro adicionado!',
+                        'ativado' => 'Conta ativada com sucesso!'
+                    ];
+                    // Proteção contra exibição indevida de mensagens
+                    echo htmlspecialchars($mensagens[$_GET['msg']] ?? 'Ação concluída!');
                 ?>
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>

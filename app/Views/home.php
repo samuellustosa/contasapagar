@@ -20,7 +20,7 @@ $base = "/contasapagar/public";
         </a>
         
         <div class="text-center">
-            <h5 class="mb-0 fw-bold"><?= $meses_nome[$mes_selecionado] ?></h5>
+            <h5 class="mb-0 fw-bold"><?= htmlspecialchars($meses_nome[$mes_selecionado]) ?></h5>
             <small class="text-muted"><?= $ano_selecionado ?></small>
         </div>
 
@@ -66,7 +66,7 @@ $base = "/contasapagar/public";
                     <tbody>
                         <?php foreach($contas as $c): ?>
                         <tr>
-                            <td class="ps-4"><strong><?= $c['name'] ?></strong></td>
+                            <td class="ps-4"><strong><?= htmlspecialchars($c['name']) ?></strong></td>
                             <td>R$ <?= number_format($c['amount'], 2, ',', '.') ?></td>
                             <td><?= date('d/m/Y', strtotime($c['due_date'])) ?></td>
                             <td>
@@ -98,7 +98,7 @@ $base = "/contasapagar/public";
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start mb-2">
                     <div>
-                        <h6 class="mb-0"><?= $c['name'] ?></h6>
+                        <h6 class="mb-0"><?= htmlspecialchars($c['name']) ?></h6>
                         <small class="text-muted"><?= date('d/m/Y', strtotime($c['due_date'])) ?></small>
                     </div>
                     <h6 class="text-primary mb-0">R$ <?= number_format($c['amount'], 2, ',', '.') ?></h6>
