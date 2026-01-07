@@ -10,16 +10,16 @@ class Database {
     public static function getConnection() {
         if (self::$instance === null) {
             
-            $host = 'localhost'; 
-            $db   = 'contass'; 
-            $user = 'root';      
-            $pass = '';          
+            $host = 'sql207.infinityfree.com'; 
+            $db   = 'if0_40820170_contas'; 
+            $user = 'if0_40820170';      
+            $pass = 'sous31075';          
 
             try {
                 self::$instance = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass);
                 self::$instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             } catch (PDOException $e) {
-                die("Erro ao conectar no banco local: " . $e->getMessage());
+                die("Erro ao conectar no banco: " . $e->getMessage());
             }
         }
         return self::$instance;

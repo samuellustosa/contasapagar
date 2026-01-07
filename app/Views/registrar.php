@@ -1,6 +1,6 @@
 <?php 
 // Define a base para o localhost
-$base = "/contasapagar/public"; 
+$base = ""; 
 
 // Garante que a variável $msg exista para não dar erro de "undefined variable"
 $msg = $msg ?? ''; 

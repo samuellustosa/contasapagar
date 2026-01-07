@@ -9,7 +9,8 @@ class AuthController {
     
     public function login() {
         $erro = null;
-        $base = "/contasapagar/public";
+        // Definido como vazio para funcionar na raiz do domínio rf.gd
+        $base = ""; 
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (session_status() === PHP_SESSION_NONE) session_start();
@@ -22,7 +23,7 @@ class AuthController {
                 if ($user['ativo'] == 1) {
                     $_SESSION['logado'] = true;
                     $_SESSION['user_id'] = $user['id'];
-                    header("Location: $base/home");
+                    ("Location: $base/home");
                     exit;
                 }
                 $erro = "Conta não ativada. Verifique seu e-mail.";
@@ -35,7 +36,7 @@ class AuthController {
 
     public function register() {
         $msg = null;
-        $base = "/contasapagar/public";
+        $base = "";
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (session_status() === PHP_SESSION_NONE) session_start();
@@ -46,7 +47,6 @@ class AuthController {
             if ($userModel->findByEmail($_POST['email'])) {
                 $msg = "Este e-mail já está cadastrado.";
             } else {
-                // md5 de um uniqid ainda é aceitável para tokens de ativação descartáveis
                 $token = md5(uniqid($_POST['email'], true));
                 $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT);
 
@@ -69,15 +69,15 @@ class AuthController {
             $mail->Host       = 'smtp.gmail.com'; 
             $mail->SMTPAuth   = true;
             $mail->Username   = 'samuelllsousa579@gmail.com'; 
-            $mail->Password   = '';
+            $mail->Password   = 'SUA_SENHA_DE_APP_AQUI'; // Lembre-se de usar a Senha de App do Google
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port       = 587;
 
             $mail->setFrom('samuelllsousa579@gmail.com', 'Contas a Pagar');
             $mail->addAddress($email);
 
-            
-            $link = "http://localhost/contasapagar/public/ativar?token=" . $token;
+            // Link atualizado para o seu domínio real
+            $link = "http://contasapagar.rf.gd/ativar?token=" . $token;
             
             $mail->isHTML(true);
             $mail->Subject = 'Ative sua conta - Contas a Pagar';
@@ -98,12 +98,12 @@ class AuthController {
 
     public function ativar() {
         $token = $_GET['token'] ?? null;
-        $base = "/contasapagar/public";
+        $base = "";
         
         if ($token) {
             $userModel = new User();
             if ($userModel->activate($token)) {
-                header("Location: $base/login?msg=ativado");
+                ("Location: $base/login?msg=ativado");
                 exit;
             }
         }
@@ -114,7 +114,8 @@ class AuthController {
         if (session_status() === PHP_SESSION_NONE) session_start();
         session_unset();
         session_destroy();
-        header("Location: /contasapagar/public/login");
+        // Ajustado para redirecionar para a raiz do seu novo domínio
+        ("Location: /login"); 
         exit;
     }
 }

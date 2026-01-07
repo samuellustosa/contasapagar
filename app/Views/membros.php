@@ -1,7 +1,7 @@
 <?php 
 include 'header.php'; 
 // Define a base para o localhost
-$base = "/contasapagar/public"; 
+$base = ""; 
 ?>
 
 <div class="container mt-3">

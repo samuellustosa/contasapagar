@@ -6,7 +6,7 @@ use App\Models\Member;
 use DateTime;
 
 class DebtController {
-    private $base = "/contasapagar/public";
+    private $base = "";
 
     public function create() {
         if (session_status() === PHP_SESSION_NONE) session_start();

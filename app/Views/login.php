@@ -1,6 +1,6 @@
 <?php 
 // Define a base para o localhost
-$base = "/contasapagar/public"; 
+$base = ""; 
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">

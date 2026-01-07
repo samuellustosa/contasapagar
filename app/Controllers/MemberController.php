@@ -8,9 +8,12 @@ class MemberController {
     public function index() {
         if (session_status() === PHP_SESSION_NONE) session_start();
         
+        // Define a base como vazia para o domínio real
+        $base = ""; 
+        
         // Bloqueia acesso se não estiver logado
         if (!isset($_SESSION['logado'])) { 
-            header("Location: /contasapagar/public/login"); 
+            header("Location: $base/login"); 
             exit; 
         }
 
@@ -26,7 +29,7 @@ class MemberController {
 
             // Passa o nome, emoji e o ID do usuário logado
             $memberModel->create($_POST['name'], $_POST['emoji'], $user_id);
-            header("Location: /contasapagar/public/membros?msg=membro_add");
+            header("Location: $base/membros?msg=membro_add");
             exit;
         }
 
@@ -38,8 +41,11 @@ class MemberController {
 
     public function excluir() {
         if (session_status() === PHP_SESSION_NONE) session_start();
+        
+        $base = "";
+
         if (!isset($_SESSION['logado'])) { 
-            header("Location: /contasapagar/public/login"); 
+            header("Location: $base/login"); 
             exit; 
         }
 
@@ -50,7 +56,7 @@ class MemberController {
             $memberModel = new Member();
             // Só exclui se o membro pertencer ao usuário logado
             $memberModel->delete($id, $user_id);
-            header("Location: /contasapagar/public/membros?msg=excluido");
+            header("Location: $base/membros?msg=excluido");
             exit;
         }
     }

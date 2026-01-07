@@ -1,7 +1,7 @@
 <?php 
 include 'header.php'; 
-// Define a base para o localhost
-$base = "/contasapagar/public"; 
+
+$base = ""; 
 ?>
 
 <div class="card shadow-sm p-4 mx-auto" style="max-width: 500px; border-radius: 15px;">

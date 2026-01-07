@@ -6,7 +6,7 @@ use DateTime;
 
 class HomeController {
     public function index() {
-        $base = "/contasapagar/public";
+        $base = "";
 
         if (session_status() === PHP_SESSION_NONE) session_start();
         
@@ -51,7 +51,7 @@ class HomeController {
 
     public function pagar() {
         if (session_status() === PHP_SESSION_NONE) session_start();
-        $base = "/contasapagar/public";
+        $base = "";
         $id = $_GET['id'] ?? null;
         $user_id = $_SESSION['user_id'];
         
@@ -67,7 +67,7 @@ class HomeController {
 
     public function excluir() {
         if (session_status() === PHP_SESSION_NONE) session_start();
-        $base = "/contasapagar/public";
+        $base = "";
         $id = $_GET['id'] ?? null;
         $user_id = $_SESSION['user_id'];
         

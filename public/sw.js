@@ -1,10 +1,10 @@
-const CACHE_NAME = 'contas-v2'; // Mudamos para v2 para forçar a atualização
+const CACHE_NAME = 'contas-v2';
 const ASSETS = [
   'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css',
   'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js',
-  'icon-192x192.png',
-  'icon-512x512.png',
-  'manifest.json'
+  '/icon-192x192.png',
+  '/icon-512x512.png',
+  '/manifest.json'
 ];
 
 self.addEventListener('install', event => {

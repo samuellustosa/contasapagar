@@ -1,6 +1,6 @@
 <?php 
 include 'header.php'; 
-$base = "/contasapagar/public"; 
+$base = ""; 
 ?>
 
 <div class="container mt-3">

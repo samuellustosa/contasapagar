@@ -1,6 +1,5 @@
 RewriteEngine On
-# Define que o ponto de partida é a sua pasta de projeto
-RewriteBase /contasapagar/public/
+RewriteBase /
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
