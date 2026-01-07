@@ -65,20 +65,18 @@ class AuthController {
         $mail = new PHPMailer(true);
 
         try {
-            // Como você mencionou que usa .env, aqui devem entrar as variáveis de ambiente
-            // Exemplo: getenv('SMTP_USER') ou $_ENV['SMTP_USER']
             $mail->isSMTP();
             $mail->Host       = 'smtp.gmail.com'; 
             $mail->SMTPAuth   = true;
-            $mail->Username   = getenv('SMTP_USER') ?: ''; // Puxa do seu .env
-            $mail->Password   = getenv('SMTP_PASS') ?: ''; // Puxa do seu .env
+            $mail->Username   = 'samuelllsousa579@gmail.com'; 
+            $mail->Password   = '';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port       = 587;
 
             $mail->setFrom('samuelllsousa579@gmail.com', 'Contas a Pagar');
             $mail->addAddress($email);
 
-            // Link dinâmico (ajuste o domínio se for subir para a web)
+            
             $link = "http://localhost/contasapagar/public/ativar?token=" . $token;
             
             $mail->isHTML(true);

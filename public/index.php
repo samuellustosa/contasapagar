@@ -19,6 +19,9 @@ switch ($url) {
     case 'registrar':
         (new AuthController())->register();
         break;
+    case 'ativar':
+        (new AuthController())->ativar();
+        break;
     case 'logout':
         (new AuthController())->logout();
         break;
