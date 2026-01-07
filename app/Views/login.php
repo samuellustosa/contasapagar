@@ -1,26 +1,3 @@
-<?php
-require_once 'config.php';
-$erro = "";
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
-    $stmt->execute([$email]);
-    $user = $stmt->fetch();
-
-    if ($user && password_verify($_POST['senha'], $user['senha'])) {
-        if ($user['ativo'] == 1) {
-            $_SESSION['logado'] = true;
-            header("Location: index.php");
-            exit;
-        } else {
-            $erro = "Sua conta ainda não foi ativada pelo e-mail.";
-        }
-    } else {
-        $erro = "Dados incorretos.";
-    }
-}
-?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
