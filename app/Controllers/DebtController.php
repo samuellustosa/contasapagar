@@ -2,10 +2,13 @@
 namespace App\Controllers;
 use App\Models\Debt;
 use App\Models\Member;
+use DateTime;
 
 class DebtController {
     public function create() {
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) session_start();
+        if (!isset($_SESSION['logado'])) { header("Location: /login"); exit; }
+
         $debtModel = new Debt();
         $memberModel = new Member();
 
@@ -22,19 +25,31 @@ class DebtController {
     }
 
     public function report() {
-    if (session_status() === PHP_SESSION_NONE) session_start();
-    
-    $mes_selecionado = $_GET['mes'] ?? date('m');
-    $ano_selecionado = $_GET['ano'] ?? date('Y');
-    
-    $debtModel = new Debt();
-    $dados_relatorio = $debtModel->getReportData($mes_selecionado, $ano_selecionado);
-    
-    // Cálculo de totais para o gráfico
-    $total_geral = array_sum(array_column($dados_relatorio, 'total_pessoa'));
-    $nomes_grafico = array_column($dados_relatorio, 'name');
-    $valores_grafico = array_column($dados_relatorio, 'total_pessoa');
+        if (session_status() === PHP_SESSION_NONE) session_start();
+        if (!isset($_SESSION['logado'])) { header("Location: /login"); exit; }
+        
+        $mes_selecionado = $_GET['mes'] ?? date('m');
+        $ano_selecionado = $_GET['ano'] ?? date('Y');
+        
+        // Lógica de navegação de datas
+        $data_atual = new DateTime("$ano_selecionado-$mes_selecionado-01");
+        $anterior = clone $data_atual; $anterior->modify('-1 month');
+        $proximo = clone $data_atual; $proximo->modify('+1 month');
 
-    require_once '../app/Views/relatorios.php';
-}
+        $debtModel = new Debt();
+        $dados_relatorio = $debtModel->getReportData($mes_selecionado, $ano_selecionado);
+        
+        $data = [
+            'dados_relatorio' => $dados_relatorio,
+            'mes_selecionado' => $mes_selecionado,
+            'ano_selecionado' => $ano_selecionado,
+            'mes_ant' => $anterior->format('m'),
+            'ano_ant' => $anterior->format('Y'),
+            'mes_prox' => $proximo->format('m'),
+            'ano_prox' => $proximo->format('Y')
+        ];
+
+        extract($data);
+        require_once '../app/Views/relatorios.php';
+    }
 }
