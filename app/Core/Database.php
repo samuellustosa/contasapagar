@@ -9,17 +9,17 @@ class Database {
 
     public static function getConnection() {
         if (self::$instance === null) {
-            // Podes usar as tuas variáveis do ficheiro .env aqui
-            $host = 'sql207.infinityfree.com';
-            $db   = 'if0_40820170_contas';
-            $user = 'if0_40820170';
-            $pass = 'sous31075';
+            // Configurações do seu XAMPP Local
+            $host = 'localhost'; 
+            $db   = 'contass'; 
+            $user = 'root';      
+            $pass = '';          
 
             try {
-                self::$instance = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $user, $pass);
+                self::$instance = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass);
                 self::$instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             } catch (PDOException $e) {
-                die("Erro na conexão: " . $e->getMessage());
+                die("Erro ao conectar no banco local: " . $e->getMessage());
             }
         }
         return self::$instance;

@@ -77,4 +77,9 @@ class Debt {
         $stmt->execute([$mes, $ano]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function togglePayment($id) {
+        $stmt = $this->db->prepare("UPDATE debts SET is_paid = NOT is_paid WHERE id = ?");
+        return $stmt->execute([$id]);
+    }
 }

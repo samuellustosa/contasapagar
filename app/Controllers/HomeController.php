@@ -31,4 +31,33 @@ class HomeController {
         // Carrega a View e passa os dados
         require_once '../app/Views/home.php';
     }
+
+    
+    public function excluir() {
+        $id = $_GET['id'] ?? null;
+        if ($id) {
+            $debtModel = new \App\Models\Debt();
+            $debtModel->delete($id);
+            
+            $mes = $_GET['mes'] ?? date('m');
+            $ano = $_GET['ano'] ?? date('Y');
+            header("Location: /home?mes=$mes&ano=$ano&msg=excluido");
+            exit;
+        }
+    }
+
+        // Método para Alternar Pagamento (Pagar/Desmarcar)
+    public function pagar() {
+        $id = $_GET['id'] ?? null;
+        if ($id) {
+            $debtModel = new \App\Models\Debt();
+            $debtModel->togglePayment($id); // Certifica-te que este método existe no Model Debt
+            
+            $mes = $_GET['mes'] ?? date('m');
+            $ano = $_GET['ano'] ?? date('Y');
+            header("Location: /home?mes=$mes&ano=$ano");
+            exit;
+        }
+    }
+
 }
