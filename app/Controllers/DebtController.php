@@ -22,17 +22,19 @@ class DebtController {
     }
 
     public function report() {
-        session_start();
-        $mes = $_GET['mes'] ?? date('m');
-        $ano = $_GET['ano'] ?? date('Y');
-        
-        $debtModel = new Debt();
-        $dados = $debtModel->getReportData($mes, $ano);
-        
-        // Processa totais para o gráfico do Chart.js
-        $nomes = array_column($dados, 'name');
-        $valores = array_column($dados, 'total_pessoa');
+    if (session_status() === PHP_SESSION_NONE) session_start();
+    
+    $mes_selecionado = $_GET['mes'] ?? date('m');
+    $ano_selecionado = $_GET['ano'] ?? date('Y');
+    
+    $debtModel = new Debt();
+    $dados_relatorio = $debtModel->getReportData($mes_selecionado, $ano_selecionado);
+    
+    // Cálculo de totais para o gráfico
+    $total_geral = array_sum(array_column($dados_relatorio, 'total_pessoa'));
+    $nomes_grafico = array_column($dados_relatorio, 'name');
+    $valores_grafico = array_column($dados_relatorio, 'total_pessoa');
 
-        require_once '../app/Views/relatorios.php';
-    }
+    require_once '../app/Views/relatorios.php';
+}
 }

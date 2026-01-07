@@ -31,9 +31,6 @@ switch ($url) {
         (new MemberController())->index();
         break;
 
-    case 'excluir-membro':
-        (new MemberController())->excluir();
-        break;
 
     case 'excluir-conta':
         (new HomeController())->excluir();

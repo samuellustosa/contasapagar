@@ -2,62 +2,66 @@
 namespace App\Controllers;
 
 use App\Models\Debt;
+use DateTime;
 
 class HomeController {
     public function index() {
-        // Verifica se o utilizador está logado (pode ser melhorado depois com um Middleware)
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) session_start();
+        
         if (!isset($_SESSION['logado'])) {
             header("Location: /login");
             exit;
         }
 
         $debtModel = new Debt();
-        
-        // Lógica de datas vinda do seu index.php original
         $mes_selecionado = $_GET['mes'] ?? date('m');
         $ano_selecionado = $_GET['ano'] ?? date('Y');
 
-        $contas = $debtModel->getMonthlyDebts($mes_selecionado, $ano_selecionado);
-        $resumo = $debtModel->getTotals($mes_selecionado, $ano_selecionado);
+        // Lógica das setas para navegação entre meses
+        $data_atual = new DateTime("$ano_selecionado-$mes_selecionado-01");
+        $anterior = clone $data_atual;
+        $anterior->modify('-1 month');
+        $proximo = clone $data_atual;
+        $proximo->modify('+1 month');
 
-        // Nomes dos meses para a View
-        $meses_nome = [
-            '01' => 'Janeiro', '02' => 'Fevereiro', '03' => 'Março', '04' => 'Abril',
-            '05' => 'Maio', '06' => 'Junho', '07' => 'Julho', '08' => 'Agosto',
-            '09' => 'Setembro', '10' => 'Outubro', '11' => 'Novembro', '12' => 'Dezembro'
+        $data = [
+            'contas' => $debtModel->getMonthlyDebts($mes_selecionado, $ano_selecionado),
+            'resumo' => $debtModel->getTotals($mes_selecionado, $ano_selecionado),
+            'mes_selecionado' => $mes_selecionado,
+            'ano_selecionado' => $ano_selecionado,
+            'mes_ant' => $anterior->format('m'),
+            'ano_ant' => $anterior->format('Y'),
+            'mes_prox' => $proximo->format('m'),
+            'ano_prox' => $proximo->format('Y'),
+            'meses_nome' => [
+                '01' => 'Janeiro', '02' => 'Fevereiro', '03' => 'Março', '04' => 'Abril',
+                '05' => 'Maio', '06' => 'Junho', '07' => 'Julho', '08' => 'Agosto',
+                '09' => 'Setembro', '10' => 'Outubro', '11' => 'Novembro', '12' => 'Dezembro'
+            ]
         ];
 
-        // Carrega a View e passa os dados
+        // Extrai as variáveis para a view as reconhecer diretamente
+        extract($data);
         require_once '../app/Views/home.php';
     }
 
-    
-    public function excluir() {
-        $id = $_GET['id'] ?? null;
-        if ($id) {
-            $debtModel = new \App\Models\Debt();
-            $debtModel->delete($id);
-            
-            $mes = $_GET['mes'] ?? date('m');
-            $ano = $_GET['ano'] ?? date('Y');
-            header("Location: /home?mes=$mes&ano=$ano&msg=excluido");
-            exit;
-        }
-    }
-
-        // Método para Alternar Pagamento (Pagar/Desmarcar)
     public function pagar() {
         $id = $_GET['id'] ?? null;
         if ($id) {
-            $debtModel = new \App\Models\Debt();
-            $debtModel->togglePayment($id); // Certifica-te que este método existe no Model Debt
-            
-            $mes = $_GET['mes'] ?? date('m');
-            $ano = $_GET['ano'] ?? date('Y');
-            header("Location: /home?mes=$mes&ano=$ano");
+            $debtModel = new Debt();
+            $debtModel->togglePayment($id);
+            header("Location: /home?mes=" . ($_GET['mes'] ?? date('m')) . "&ano=" . ($_GET['ano'] ?? date('Y')));
             exit;
         }
     }
 
+    public function excluir() {
+        $id = $_GET['id'] ?? null;
+        if ($id) {
+            $debtModel = new Debt();
+            $debtModel->delete($id);
+            header("Location: /home?msg=excluido");
+            exit;
+        }
+    }
 }
