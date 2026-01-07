@@ -11,12 +11,22 @@ class Debt {
         $this->db = Database::getConnection();
     }
 
-    // Busca apenas as contas do usuário logado
+    // Busca as contas do usuário logado incluindo os nomes dos devedores
     public function getMonthlyDebts($mes, $ano, $user_id) {
-        $stmt = $this->db->prepare("SELECT * FROM debts WHERE MONTH(due_date) = ? AND YEAR(due_date) = ? AND user_id = ? ORDER BY due_date ASC");
-        $stmt->execute([$mes, $ano, $user_id]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+    // Removido o m.emoji da concatenação
+    $sql = "SELECT d.*, 
+            GROUP_CONCAT(m.name SEPARATOR ', ') as devedores
+            FROM debts d
+            LEFT JOIN debt_members dm ON d.id = dm.debt_id
+            LEFT JOIN family_members m ON dm.member_id = m.id
+            WHERE MONTH(d.due_date) = ? AND YEAR(d.due_date) = ? AND d.user_id = ?
+            GROUP BY d.id
+            ORDER BY d.due_date ASC";
+
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute([$mes, $ano, $user_id]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
     // Calcula os totais filtrando pelo usuário logado
     public function getTotals($mes, $ano, $user_id) {
@@ -47,7 +57,6 @@ class Debt {
     public function create($name, $amount, $due_date, $debtors, $user_id) {
         $this->db->beginTransaction();
         try {
-            // Agora inclui o campo user_id na query
             $stmt = $this->db->prepare("INSERT INTO debts (name, amount, due_date, user_id) VALUES (?, ?, ?, ?)");
             $stmt->execute([$name, $amount, $due_date, $user_id]);
             $debt_id = $this->db->lastInsertId();
@@ -79,7 +88,6 @@ class Debt {
     }
 
     public function togglePayment($id, $user_id) {
-        // Verifica o user_id para evitar que alguém desmarque a conta de outro via URL
         $stmt = $this->db->prepare("UPDATE debts SET is_paid = NOT is_paid WHERE id = ? AND user_id = ?");
         return $stmt->execute([$id, $user_id]);
     }

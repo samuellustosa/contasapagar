@@ -12,7 +12,7 @@ class DebtController {
         if (session_status() === PHP_SESSION_NONE) session_start();
         if (!isset($_SESSION['logado'])) { header("Location: {$this->base}/login"); exit; }
 
-        $user_id = $_SESSION['user_id']; // Identifica o dono da conta
+        $user_id = $_SESSION['user_id']; 
         $debtModel = new Debt();
         $memberModel = new Member();
 

@@ -69,14 +69,14 @@ class AuthController {
             $mail->Host       = 'smtp.gmail.com'; 
             $mail->SMTPAuth   = true;
             $mail->Username   = 'samuelllsousa579@gmail.com'; 
-            $mail->Password   = 'SUA_SENHA_DE_APP_AQUI'; // Lembre-se de usar a Senha de App do Google
+            $mail->Password   = 'SUA_SENHA_DE_APP_AQUI';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port       = 587;
 
             $mail->setFrom('samuelllsousa579@gmail.com', 'Contas a Pagar');
             $mail->addAddress($email);
 
-            // Link atualizado para o seu domínio real
+            
             $link = "http://contasapagar.rf.gd/ativar?token=" . $token;
             
             $mail->isHTML(true);
@@ -114,7 +114,7 @@ class AuthController {
         if (session_status() === PHP_SESSION_NONE) session_start();
         session_unset();
         session_destroy();
-        // Ajustado para redirecionar para a raiz do seu novo domínio
+        
         ("Location: /login"); 
         exit;
     }

@@ -48,7 +48,7 @@ $base = "";
                         <tr>
                             <th class="ps-4">Conta</th>
                             <th>Valor</th>
-                            <th>Vencimento</th>
+                            <th>Quem deve</th> <th>Vencimento</th>
                             <th>Status</th>
                             <th class="text-end pe-4">Ações</th>
                         </tr>
@@ -58,7 +58,7 @@ $base = "";
                         <tr>
                             <td class="ps-4"><strong><?= htmlspecialchars($c['name']) ?></strong></td>
                             <td>R$ <?= number_format($c['amount'], 2, ',', '.') ?></td>
-                            <td><?= date('d/m/Y', strtotime($c['due_date'])) ?></td>
+                            <td><small class="text-muted"><?= htmlspecialchars($c['devedores'] ?? 'Ninguém') ?></small></td> <td><?= date('d/m/Y', strtotime($c['due_date'])) ?></td>
                             <td>
                                 <span class="badge <?= $c['is_paid'] ? 'bg-success' : 'bg-warning text-dark' ?>">
                                     <?= $c['is_paid'] ? 'Pago' : 'Pendente' ?>
@@ -69,7 +69,7 @@ $base = "";
                                     <a href="<?= $base ?>/pagar?id=<?= $c['id'] ?>&mes=<?= $mes_selecionado ?>&ano=<?= $ano_selecionado ?>" class="btn btn-sm btn-light border">
                                         <?= $c['is_paid'] ? 'Desmarcar' : 'Pagar' ?>
                                     </a>
-                                    <a href="<?= $base ?>/excluir-conta?id=<?= $c['id'] ?>&mes=<?= $mes_selecionado ?>&ano=<?= $ano_selecionado ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Deseja excluir esta conta?')">
+                                    <a href="<?= $base ?>/excluir-conta?id=<?= $c['id'] ?>&mes=<?= $mes_selecionado ?>&ano=<?= $ano_selecionado ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Deseja excluir?')">
                                         Excluir
                                     </a>
                                 </div>
@@ -89,7 +89,7 @@ $base = "";
                 <div class="d-flex justify-content-between align-items-start mb-2">
                     <div>
                         <h6 class="mb-0"><?= htmlspecialchars($c['name']) ?></h6>
-                        <small class="text-muted"><?= date('d/m/Y', strtotime($c['due_date'])) ?></small>
+                        <div class="small text-info mb-1"><?= htmlspecialchars($c['devedores'] ?? '') ?></div> <small class="text-muted"><?= date('d/m/Y', strtotime($c['due_date'])) ?></small>
                     </div>
                     <h6 class="text-primary mb-0">R$ <?= number_format($c['amount'], 2, ',', '.') ?></h6>
                 </div>
