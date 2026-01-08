@@ -1,6 +1,19 @@
 RewriteEngine On
 RewriteBase /
 
+# 1. Forçar o uso de HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# 2. Bloquear acesso direto a pastas sensíveis
+RewriteRule ^(app|vendor|Core) - [F,L]
+
+# 3. EXCEÇÃO PARA PWA: Ignorar arquivos reais para evitar erro de MIME type
+# Se o arquivo existe fisicamente, entrega ele diretamente sem ir para o index.php
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^(sw\.js|manifest\.json|.*\.png|.*\.css|.*\.js)$ - [L]
+
+# 4. Gerenciamento de Rotas Amigáveis (apenas para o que não é arquivo real)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]

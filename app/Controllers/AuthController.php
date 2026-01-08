@@ -9,7 +9,6 @@ class AuthController {
     
     public function login() {
         $erro = null;
-        // Definido como vazio para funcionar na raiz do domínio rf.gd
         $base = ""; 
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -23,7 +22,8 @@ class AuthController {
                 if ($user['ativo'] == 1) {
                     $_SESSION['logado'] = true;
                     $_SESSION['user_id'] = $user['id'];
-                    ("Location: $base/home");
+
+                    header("Location: $base/home");
                     exit;
                 }
                 $erro = "Conta não ativada. Verifique seu e-mail.";
@@ -31,7 +31,7 @@ class AuthController {
                 $erro = "E-mail ou senha incorretos.";
             }
         }
-        require_once '../app/Views/login.php';
+        require_once 'app/Views/login.php';
     }
 
     public function register() {
@@ -58,7 +58,7 @@ class AuthController {
                 }
             }
         }
-        require_once '../app/Views/registrar.php';
+        require_once 'app/Views/registrar.php';
     }
 
     private function sendActivationEmail($email, $token) {
@@ -69,14 +69,14 @@ class AuthController {
             $mail->Host       = 'smtp.gmail.com'; 
             $mail->SMTPAuth   = true;
             $mail->Username   = 'samuelllsousa579@gmail.com'; 
-            $mail->Password   = 'SUA_SENHA_DE_APP_AQUI';
+            $mail->Password   = ''; 
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port       = 587;
 
             $mail->setFrom('samuelllsousa579@gmail.com', 'Contas a Pagar');
             $mail->addAddress($email);
 
-            
+            // Link atualizado para o seu domínio real
             $link = "http://contasapagar.rf.gd/ativar?token=" . $token;
             
             $mail->isHTML(true);
@@ -103,7 +103,8 @@ class AuthController {
         if ($token) {
             $userModel = new User();
             if ($userModel->activate($token)) {
-                ("Location: $base/login?msg=ativado");
+                // CORREÇÃO: Adicionado header e exit
+                header("Location: $base/login?msg=ativado");
                 exit;
             }
         }
@@ -114,8 +115,8 @@ class AuthController {
         if (session_status() === PHP_SESSION_NONE) session_start();
         session_unset();
         session_destroy();
-        
-        ("Location: /login"); 
+        // CORREÇÃO: Adicionado header e exit
+        header("Location: /login"); 
         exit;
     }
 }

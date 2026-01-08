@@ -8,37 +8,38 @@
     // Função para mostrar o loader e esconder o conteúdo
     function showLoader() {
       if (skeleton && mainContent) {
-        skeleton.classList.remove('d-none'); // Remove a classe que esconde o skeleton
-        mainContent.classList.add('content-hidden'); // Adiciona a classe que esconde o conteúdo real
-        window.scrollTo(0, 0); // Garante que a transição comece do topo da página
+        skeleton.classList.remove('d-none');
+        mainContent.classList.add('content-hidden');
+        window.scrollTo(0, 0);
       }
     }
 
-    // 1. Fechamento automático de alertas (mensagens de sucesso/erro)
+    // 1. Fechamento automático de alertas
     const alerts = document.querySelectorAll('.alert');
     alerts.forEach(function(alert) {
       setTimeout(() => {
         const bsAlert = new bootstrap.Alert(alert);
         bsAlert.close();
-      }, 3000); // Reduzido para 3 segundos para uma resposta mais rápida
+      }, 3000);
     });
 
-    // 2. Ativar Skeleton ao clicar em links (navegação interna)
+    // 2. Ativar Skeleton ao clicar em links (com as exceções)
     document.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', function(e) {
         const href = this.getAttribute('href');
         
-        // Filtra links que não devem disparar o loader (âncoras, exclusões e botões de pagamento)
+        // Filtra links que NÃO devem disparar o loader
         if (href && !href.startsWith('#') && 
             !this.classList.contains('btn-outline-danger') && 
             !href.includes('pagar') && 
-            !href.includes('excluir')) {
+            !href.includes('excluir') &&
+            !href.includes('relatorio-geral-pdf')) { // ADICIONADO: Não trava no PDF
           showLoader();
         }
       });
     });
 
-
+    // Ativar Skeleton ao enviar formulários
     document.querySelectorAll('form').forEach(form => {
       form.addEventListener('submit', function() {
         showLoader();
@@ -46,7 +47,7 @@
     });
 
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/contasapagar/public/sw.js')
+      navigator.serviceWorker.register('sw.js')
         .then(reg => console.log('PWA: Service Worker ativo'))
         .catch(err => console.error('PWA: Falha ao registrar SW', err));
     }

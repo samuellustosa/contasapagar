@@ -55,7 +55,7 @@ $base = "";
                                     <td class="text-end pe-3">
                                         <a href="<?= $base ?>/excluir-membro?id=<?= $m['id'] ?>" 
                                            class="btn btn-sm btn-outline-danger rounded-pill" 
-                                           onclick="return confirm('Excluir membro?')">Excluir</a>
+                                           >Excluir</a>
                                     </td>
                                 </tr>
                                 <?php endforeach; ?>

@@ -59,7 +59,7 @@ switch ($url) {
     case 'relatorios':
         (new DebtController())->report();
         break;
-    case 'relatorio-geral-pdf':
+    case 'relatorio-geral-pdf': // ADICIONADO: Rota para o PDF Geral
         (new DebtController())->relatorioGeralPDF();
         break;
     case 'pagar':

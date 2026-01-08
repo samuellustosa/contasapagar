@@ -35,7 +35,7 @@ class MemberController {
 
         // LISTAR: Busca apenas os membros que ESSE usuário criou
         $membros = $memberModel->getAll($user_id);
-        require_once '../app/Views/membros.php';
+        require_once 'app/Views/membros.php';
     }
 
 
@@ -54,7 +54,6 @@ class MemberController {
 
         if ($id) {
             $memberModel = new Member();
-            // Só exclui se o membro pertencer ao usuário logado
             $memberModel->delete($id, $user_id);
             header("Location: $base/membros?msg=excluido");
             exit;

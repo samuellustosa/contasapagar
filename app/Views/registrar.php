@@ -27,7 +27,7 @@ $msg = $msg ?? '';
     <div class="card register-card p-4 shadow-lg">
         <div class="text-center mb-4">
             <h3 class="fw-bold text-success">Criar Conta</h3>
-            <p class="text-muted small">Registe-se para organizar os seus gastos</p>
+            <p class="text-muted small">Não entre!!! Caminho sem volta.</p>
         </div>
 
         <?php if($msg): ?>

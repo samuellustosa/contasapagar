@@ -1,5 +1,4 @@
 <?php 
-// Define a base para o localhost
 $base = ""; 
 ?>
 <!DOCTYPE html>
@@ -18,8 +17,8 @@ $base = "";
 <body class="d-flex align-items-center justify-content-center" style="height: 100vh;">
     <div class="card p-4 shadow-lg login-card" style="width: 100%; max-width: 400px; margin: 20px;">
         <div class="text-center mb-4">
-            <h3 class="fw-bold text-primary">Acesso Familiar</h3>
-            <p class="text-muted small">Gerencie suas contas de forma simples</p>
+            <h3 class="fw-bold text-primary">Contas a Pagar</h3>
+            <p class="text-muted small">Que os jogos comecem</p>
         </div>
         
         <?php if(isset($erro) && $erro): ?> 

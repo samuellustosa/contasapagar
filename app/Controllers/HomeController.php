@@ -46,7 +46,7 @@ class HomeController {
         ];
 
         extract($data);
-        require_once '../app/Views/home.php';
+        require_once 'app/Views/home.php';
     }
 
     public function pagar() {

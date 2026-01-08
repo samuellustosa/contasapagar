@@ -110,7 +110,7 @@ class DebtController {
         </style>
 
         <div class="titulo">
-            <h1>Relatório Contas a Pagar</h1>
+            <h1>Relatório</h1>
             <p>Período: <?= $mes ?>/<?= $ano ?></p>
         </div>
 
@@ -140,7 +140,7 @@ class DebtController {
         <?php endif; ?>
 
         <div class="footer">
-            Gerado em <?= date('d/m/Y H:i') ?> - Sistema Contas a Pagar
+            Gerado em <?= date('d/m/Y H:i') ?> - Contas a Pagar
         </div>
 
         <?php
