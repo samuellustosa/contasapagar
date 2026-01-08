@@ -136,14 +136,17 @@ class Debt {
         return $stmt->execute([$id, $user_id]);
     }
 
+
     public function getAllMemberDebtsDetail($mes, $ano, $user_id) {
-        $sql = "SELECT m.name as member_name, d.name as debt_name, d.amount,
+        
+        $sql = "SELECT m.name as member_name, d.name as debt_name, d.amount, 
+                d.due_date, d.tipo, d.parcela_atual, d.total_parcelas,
                 (SELECT COUNT(*) FROM debt_members dm2 WHERE dm2.debt_id = d.id) as total_participants
                 FROM family_members m
                 JOIN debt_members dm ON m.id = dm.member_id
                 JOIN debts d ON dm.debt_id = d.id
                 WHERE MONTH(d.due_date) = ? AND YEAR(d.due_date) = ? AND d.user_id = ?
-                ORDER BY m.name ASC, d.name ASC";
+                ORDER BY m.name ASC, d.due_date ASC";
         
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$mes, $ano, $user_id]);
