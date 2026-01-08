@@ -40,6 +40,13 @@ $base = "";
         </div>
     </div>
 
+    <?php if (isset($_GET['msg']) && $_GET['msg'] === 'grupo_excluido'): ?>
+        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+            O grupo de contas foi removido com sucesso!
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    <?php endif; ?>
+
     <div class="card shadow-sm border-0 d-none d-md-block">
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -48,7 +55,8 @@ $base = "";
                         <tr>
                             <th class="ps-4">Conta</th>
                             <th>Valor</th>
-                            <th>Quem deve</th> <th>Vencimento</th>
+                            <th>Quem deve</th> 
+                            <th>Vencimento</th>
                             <th>Status</th>
                             <th class="text-end pe-4">Ações</th>
                         </tr>
@@ -56,9 +64,13 @@ $base = "";
                     <tbody>
                         <?php foreach($contas as $c): ?>
                         <tr>
-                            <td class="ps-4"><strong><?= htmlspecialchars($c['name']) ?></strong></td>
+                            <td class="ps-4">
+                                <strong><?= htmlspecialchars($c['name']) ?></strong>
+                                <?php if($c['tipo'] === 'fixa'): ?> <span class="badge bg-light text-primary border">Fixa</span> <?php endif; ?>
+                            </td>
                             <td>R$ <?= number_format($c['amount'], 2, ',', '.') ?></td>
-                            <td><small class="text-muted"><?= htmlspecialchars($c['devedores'] ?? 'Ninguém') ?></small></td> <td><?= date('d/m/Y', strtotime($c['due_date'])) ?></td>
+                            <td><small class="text-muted"><?= htmlspecialchars($c['devedores'] ?? 'Ninguém') ?></small></td> 
+                            <td><?= date('d/m/Y', strtotime($c['due_date'])) ?></td>
                             <td>
                                 <span class="badge <?= $c['is_paid'] ? 'bg-success' : 'bg-warning text-dark' ?>">
                                     <?= $c['is_paid'] ? 'Pago' : 'Pendente' ?>
@@ -69,9 +81,9 @@ $base = "";
                                     <a href="<?= $base ?>/pagar?id=<?= $c['id'] ?>&mes=<?= $mes_selecionado ?>&ano=<?= $ano_selecionado ?>" class="btn btn-sm btn-light border">
                                         <?= $c['is_paid'] ? 'Desmarcar' : 'Pagar' ?>
                                     </a>
-                                    <a href="<?= $base ?>/excluir-conta?id=<?= $c['id'] ?>&mes=<?= $mes_selecionado ?>&ano=<?= $ano_selecionado ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Deseja excluir?')">
+                                    <button onclick="confirmarExclusao(<?= $c['id'] ?>, '<?= $c['tipo'] ?>')" class="btn btn-sm btn-outline-danger">
                                         Excluir
-                                    </a>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -89,7 +101,8 @@ $base = "";
                 <div class="d-flex justify-content-between align-items-start mb-2">
                     <div>
                         <h6 class="mb-0"><?= htmlspecialchars($c['name']) ?></h6>
-                        <div class="small text-info mb-1"><?= htmlspecialchars($c['devedores'] ?? '') ?></div> <small class="text-muted"><?= date('d/m/Y', strtotime($c['due_date'])) ?></small>
+                        <div class="small text-info mb-1"><?= htmlspecialchars($c['devedores'] ?? '') ?></div> 
+                        <small class="text-muted"><?= date('d/m/Y', strtotime($c['due_date'])) ?></small>
                     </div>
                     <h6 class="text-primary mb-0">R$ <?= number_format($c['amount'], 2, ',', '.') ?></h6>
                 </div>
@@ -99,9 +112,9 @@ $base = "";
                         <a href="<?= $base ?>/pagar?id=<?= $c['id'] ?>&mes=<?= $mes_selecionado ?>&ano=<?= $ano_selecionado ?>" class="btn btn-sm btn-light border">
                             <?= $c['is_paid'] ? 'Desmarcar' : 'Pagar' ?>
                         </a>
-                        <a href="<?= $base ?>/excluir-conta?id=<?= $c['id'] ?>&mes=<?= $mes_selecionado ?>&ano=<?= $ano_selecionado ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Deseja excluir?')">
+                        <button onclick="confirmarExclusao(<?= $c['id'] ?>, '<?= $c['tipo'] ?>')" class="btn btn-sm btn-outline-danger">
                             Excluir
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -109,5 +122,25 @@ $base = "";
         <?php endforeach; ?>
     </div>
 </div>
+
+<script>
+function confirmarExclusao(id, tipo) {
+    let url = "<?= $base ?>/excluir-conta?id=" + id + "&mes=<?= $mes_selecionado ?>&ano=<?= $ano_selecionado ?>";
+    
+    if (tipo !== 'unica' && tipo !== '') {
+     
+        if (confirm("Esta conta é do tipo '" + tipo + "'.\n\nClique em OK para excluir TODAS as parcelas deste grupo.\nClique em CANCELAR para excluir apenas este mês.")) {
+            url += "&todos=1";
+        } else {
+            // Se ele cancelar o 'excluir todos', ainda pergunta se quer excluir este item específico
+            if (!confirm("Deseja excluir apenas esta conta de <?= htmlspecialchars($meses_nome[$mes_selecionado]) ?>?")) return;
+        }
+    } else {
+        if (!confirm("Deseja excluir esta conta?")) return;
+    }
+    
+    window.location.href = url;
+}
+</script>
 
 <?php include 'footer.php'; ?>

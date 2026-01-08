@@ -1,62 +1,89 @@
 <?php 
-// Define a base para o localhost
+include 'header.php'; 
 $base = ""; 
-
-// Garante que a variável $msg exista para não dar erro de "undefined variable"
-$msg = $msg ?? ''; 
 ?>
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-title" content="Contas">
-    <meta name="application-name" content="Contas">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <title>Criar Conta - Contas a Pagar</title>
-    <style>
-        body { background-color: #0d6efd; display: flex; flex-direction: column; min-height: 100vh; justify-content: center; align-items: center; }
-        .register-card { width: 90%; max-width: 400px; border-radius: 15px; border: none; }
-        .form-control { padding: 12px; font-size: 16px; }
-        .btn-success { padding: 12px; font-weight: bold; border-radius: 8px; }
-        .footer-text { color: rgba(255, 255, 255, 0.8); font-size: 0.85rem; margin-top: 20px; }
-    </style>
-</head>
-<body class="p-3">
 
-    <div class="card register-card p-4 shadow-lg">
-        <div class="text-center mb-4">
-            <h3 class="fw-bold text-success">Criar Conta</h3>
-            <p class="text-muted small">Não entre!!! Caminho sem volta.</p>
+<div class="container mt-3">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0 fw-bold text-primary">Cadastrar Nova Conta</h5>
         </div>
+        <div class="card-body p-4">
+            <form method="POST" action="<?= $base ?>/nova-conta">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
 
-        <?php if($msg): ?>
-            <div class="alert alert-info small py-2 text-center shadow-sm">
-                <?= htmlspecialchars($msg) ?>
-            </div>
-        <?php endif; ?>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold text-secondary">Descrição da Conta</label>
+                        <input type="text" name="name" class="form-control" placeholder="Ex: Aluguel, Internet, Compra Celular" required>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label small fw-bold text-secondary">Valor Total</label>
+                        <input type="number" step="0.01" name="amount" class="form-control" placeholder="0,00" required>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label small fw-bold text-secondary">Vencimento</label>
+                        <input type="date" name="due_date" class="form-control" required>
+                    </div>
+                </div>
 
-        <form method="POST" action="<?= $base ?>/registrar">
-            <div class="mb-3">
-                <label class="form-label small fw-bold text-secondary">E-mail</label>
-                <input type="email" name="email" class="form-control" placeholder="exemplo@gmail.com" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label small fw-bold text-secondary">Escolha uma Senha</label>
-                <input type="password" name="senha" class="form-control" placeholder="••••••••" required>
-            </div>
-            <button class="btn btn-success w-100 shadow-sm">Registar</button>
-            
-            <div class="mt-4 text-center">
-                <a href="<?= $base ?>/login" class="text-decoration-none small fw-bold">Já tenho uma conta (Login)</a>
-            </div>
-        </form>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold text-secondary">Tipo de Cobrança</label>
+                        <select name="tipo" id="tipo_conta" class="form-select" onchange="toggleParcelas()">
+                            <option value="unica">Conta Única</option>
+                            <option value="fixa">Conta Fixa (Mensal)</option>
+                            <option value="parcelada">Compra Parcelada</option>
+                        </select>
+                        <small class="text-muted" id="tipo_help">A conta única vence apenas na data selecionada.</small>
+                    </div>
+
+                    <div class="col-md-6 mb-3 d-none" id="campo_parcelas">
+                        <label class="form-label small fw-bold text-secondary">Número de Parcelas</label>
+                        <input type="number" name="total_parcelas" class="form-control" value="2" min="2" max="48">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-secondary">Quem deve pagar? (Selecione um ou mais)</label>
+                    <div class="d-flex flex-wrap gap-2">
+                        <?php foreach($membros as $m): ?>
+                            <input type="checkbox" class="btn-check" name="debtors[]" value="<?= $m['id'] ?>" id="member_<?= $m['id'] ?>" autocomplete="off">
+                            <label class="btn btn-outline-primary btn-sm rounded-pill" for="member_<?= $m['id'] ?>">
+                                <?= $m['emoji'] ?> <?= htmlspecialchars($m['name']) ?>
+                            </label>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm">
+                        Gravar Conta
+                    </button>
+                    <a href="<?= $base ?>/home" class="btn btn-light w-100 mt-2 text-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
     </div>
+</div>
 
-    <footer class="text-center">
-        <p class="footer-text">Produzido por <strong>Samuel Lustosa</strong></p>
-    </footer>
+<script>
+function toggleParcelas() {
+    const tipo = document.getElementById('tipo_conta').value;
+    const campo = document.getElementById('campo_parcelas');
+    const help = document.getElementById('tipo_help');
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+    if (tipo === 'parcelada') {
+        campo.classList.remove('d-none');
+        help.innerText = "O sistema dividirá o valor e criará os próximos meses com (1/x, 2/x...).";
+    } else if (tipo === 'fixa') {
+        campo.classList.add('d-none');
+        help.innerText = "Esta conta será repetida automaticamente para os próximos 12 meses.";
+    } else {
+        campo.classList.add('d-none');
+        help.innerText = "A conta única vence apenas na data selecionada.";
+    }
+}
+</script>
+
+<?php include 'footer.php'; ?>

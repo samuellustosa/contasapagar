@@ -23,12 +23,15 @@ class DebtController {
                 die("Erro de validação de segurança (CSRF).");
             }
 
+            // ATUALIZADO: Agora enviamos o 'tipo' e 'total_parcelas' para o Model
             $success = $debtModel->create(
                 $_POST['name'], 
                 $_POST['amount'], 
                 $_POST['due_date'], 
                 $_POST['debtors'] ?? [], 
-                $user_id
+                $user_id,
+                $_POST['tipo'] ?? 'unica', // Novo campo do formulário
+                $_POST['total_parcelas'] ?? 1 // Novo campo do formulário
             );
 
             if ($success) {
@@ -78,7 +81,6 @@ class DebtController {
     }
 
     public function relatorioGeralPDF() {
-        
         date_default_timezone_set('America/Sao_Paulo');
 
         if (session_status() === PHP_SESSION_NONE) session_start();

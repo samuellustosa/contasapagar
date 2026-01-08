@@ -15,7 +15,6 @@ class HomeController {
             exit;
         }
 
-        // Pega o ID do usuário logado na sessão
         $user_id = $_SESSION['user_id'];
         $debtModel = new Debt();
         
@@ -28,7 +27,6 @@ class HomeController {
         $proximo = clone $data_atual;
         $proximo->modify('+1 month');
 
-        // Passa o user_id para os métodos do Model para filtrar apenas os dados dele
         $data = [
             'contas' => $debtModel->getMonthlyDebts($mes_selecionado, $ano_selecionado, $user_id),
             'resumo' => $debtModel->getTotals($mes_selecionado, $ano_selecionado, $user_id),
@@ -57,7 +55,6 @@ class HomeController {
         
         if ($id) {
             $debtModel = new Debt();
-            // Só altera o pagamento se a conta pertencer ao usuário logado
             $debtModel->togglePayment($id, $user_id);
             
             header("Location: $base/home?mes=" . ($_GET['mes'] ?? date('m')) . "&ano=" . ($_GET['ano'] ?? date('Y')));
@@ -71,12 +68,16 @@ class HomeController {
         $id = $_GET['id'] ?? null;
         $user_id = $_SESSION['user_id'];
         
+        // Se 'todos=1' vier na URL, apaga o grupo_id inteiro
+        $excluir_grupo = isset($_GET['todos']) && $_GET['todos'] == '1';
+        
         if ($id) {
             $debtModel = new Debt();
-            // Só deleta se a conta for do usuário logado
-            $debtModel->delete($id, $user_id);
+            // Chama o delete do Model passando se deve ou não apagar o grupo todo
+            $debtModel->delete($id, $user_id, $excluir_grupo);
             
-            header("Location: $base/home?msg=excluido");
+            $msg = $excluir_grupo ? "grupo_excluido" : "excluido";
+            header("Location: $base/home?msg=$msg&mes=" . ($_GET['mes'] ?? date('m')) . "&ano=" . ($_GET['ano'] ?? date('Y')));
             exit;
         }
     }

@@ -11,7 +11,6 @@ class Debt {
         $this->db = Database::getConnection();
     }
 
-    // Busca as contas do usuário logado incluindo apenas os nomes dos devedores (sem emoji)
     public function getMonthlyDebts($mes, $ano, $user_id) {
         $sql = "SELECT d.*, 
                 GROUP_CONCAT(m.name SEPARATOR ', ') as devedores
@@ -27,7 +26,6 @@ class Debt {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Calcula os totais filtrando pelo usuário logado
     public function getTotals($mes, $ano, $user_id) {
         $stmt = $this->db->prepare("SELECT 
             SUM(amount) as total,
@@ -46,24 +44,72 @@ class Debt {
         ];
     }
 
-    // Deleta apenas se a conta pertencer ao usuário logado
-    public function delete($id, $user_id) {
+    /**
+     * DELETE MELHORADO: Permite excluir o grupo todo ou apenas um item.
+     */
+    public function delete($id, $user_id, $excluir_grupo = false) {
+        if ($excluir_grupo) {
+            // Busca o grupo_id antes de deletar
+            $stmt = $this->db->prepare("SELECT grupo_id FROM debts WHERE id = ? AND user_id = ?");
+            $stmt->execute([$id, $user_id]);
+            $item = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($item && $item['grupo_id']) {
+                $stmt = $this->db->prepare("DELETE FROM debts WHERE grupo_id = ? AND user_id = ?");
+                return $stmt->execute([$item['grupo_id'], $user_id]);
+            }
+        }
+
         $stmt = $this->db->prepare("DELETE FROM debts WHERE id = ? AND user_id = ?");
         return $stmt->execute([$id, $user_id]);
     }
 
-    // Insere o user_id ao criar a conta
-    public function create($name, $amount, $due_date, $debtors, $user_id) {
+    /**
+     * CREATE MELHORADO: Nomes mais claros para contas fixas e parceladas.
+     */
+    public function create($name, $amount, $due_date, $debtors, $user_id, $tipo = 'unica', $total_parcelas = 1) {
         $this->db->beginTransaction();
         try {
-            $stmt = $this->db->prepare("INSERT INTO debts (name, amount, due_date, user_id) VALUES (?, ?, ?, ?)");
-            $stmt->execute([$name, $amount, $due_date, $user_id]);
-            $debt_id = $this->db->lastInsertId();
+            $grupo_id = uniqid(); 
+            $loops = ($tipo === 'parcelada') ? (int)$total_parcelas : (($tipo === 'fixa') ? 12 : 1);
 
-            $stmt_member = $this->db->prepare("INSERT INTO debt_members (debt_id, member_id) VALUES (?, ?)");
-            foreach ($debtors as $mid) {
-                $stmt_member->execute([$debt_id, $mid]);
+            $meses_nome = [
+                1 => 'Jan', 2 => 'Fev', 3 => 'Mar', 4 => 'Abr', 5 => 'Mai', 6 => 'Jun',
+                7 => 'Jul', 8 => 'Ago', 9 => 'Set', 10 => 'Out', 11 => 'Nov', 12 => 'Dez'
+            ];
+
+            for ($i = 0; $i < $loops; $i++) {
+                $data_vencimento = new \DateTime($due_date);
+                $data_vencimento->modify("+$i month");
+                $vencimento_final = $data_vencimento->format('Y-m-d');
+                $mes_num = (int)$data_vencimento->format('m');
+                
+                $nome_exibicao = $name;
+                if ($tipo === 'parcelada') {
+                    $nome_exibicao .= " (" . ($i + 1) . "/$total_parcelas)";
+                } elseif ($tipo === 'fixa') {
+                    $nome_exibicao .= " - " . $meses_nome[$mes_num];
+                }
+
+                $stmt = $this->db->prepare("INSERT INTO debts (name, amount, due_date, user_id, tipo, parcela_atual, total_parcelas, grupo_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->execute([
+                    $nome_exibicao, 
+                    $amount, 
+                    $vencimento_final, 
+                    $user_id, 
+                    $tipo, 
+                    ($tipo === 'parcelada' ? $i + 1 : null), 
+                    ($tipo === 'parcelada' ? (int)$total_parcelas : null),
+                    $grupo_id
+                ]);
+
+                $debt_id = $this->db->lastInsertId();
+                $stmt_member = $this->db->prepare("INSERT INTO debt_members (debt_id, member_id) VALUES (?, ?)");
+                foreach ($debtors as $mid) {
+                    $stmt_member->execute([$debt_id, $mid]);
+                }
             }
+            
             $this->db->commit();
             return true;
         } catch (\Exception $e) {
@@ -72,7 +118,6 @@ class Debt {
         }
     }
 
-    // Relatório filtrado por usuário
     public function getReportData($mes, $ano, $user_id) {
         $sql = "SELECT m.name, m.emoji, 
                 SUM(d.amount / (SELECT COUNT(*) FROM debt_members dm2 WHERE dm2.debt_id = d.id)) as total_pessoa
@@ -91,7 +136,6 @@ class Debt {
         return $stmt->execute([$id, $user_id]);
     }
 
-    // Busca detalhes de todos os membros para o Relatório Geral em PDF
     public function getAllMemberDebtsDetail($mes, $ano, $user_id) {
         $sql = "SELECT m.name as member_name, d.name as debt_name, d.amount,
                 (SELECT COUNT(*) FROM debt_members dm2 WHERE dm2.debt_id = d.id) as total_participants
@@ -103,7 +147,6 @@ class Debt {
         
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$mes, $ano, $user_id]);
-        // O FETCH_GROUP agrupa os resultados pelo primeiro campo (member_name)
         return $stmt->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_ASSOC); 
     }
 }
