@@ -138,7 +138,7 @@ class Debt {
 
 
     public function getAllMemberDebtsDetail($mes, $ano, $user_id) {
-        
+
         $sql = "SELECT m.name as member_name, d.name as debt_name, d.amount, 
                 d.due_date, d.tipo, d.parcela_atual, d.total_parcelas,
                 (SELECT COUNT(*) FROM debt_members dm2 WHERE dm2.debt_id = d.id) as total_participants
@@ -151,5 +151,45 @@ class Debt {
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$mes, $ano, $user_id]);
         return $stmt->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_ASSOC); 
+    }
+
+
+    public function find($id, $user_id) {
+        $stmt = $this->db->prepare("SELECT * FROM debts WHERE id = ? AND user_id = ?");
+        $stmt->execute([$id, $user_id]);
+        $debt = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($debt) {
+            // Busca os IDs dos membros associados a esta conta
+            $stmt_members = $this->db->prepare("SELECT member_id FROM debt_members WHERE debt_id = ?");
+            $stmt_members->execute([$id]);
+            $debt['debtors'] = $stmt_members->fetchAll(PDO::FETCH_COLUMN);
+        }
+
+        return $debt;
+    }
+
+    public function update($id, $name, $amount, $due_date, $debtors, $user_id) {
+        $this->db->beginTransaction();
+        try {
+            // Atualiza os dados básicos da conta
+            $stmt = $this->db->prepare("UPDATE debts SET name = ?, amount = ?, due_date = ? WHERE id = ? AND user_id = ?");
+            $stmt->execute([$name, $amount, $due_date, $id, $user_id]);
+
+            // Remove associações antigas de membros e insere as novas
+            $stmt_del = $this->db->prepare("DELETE FROM debt_members WHERE debt_id = ?");
+            $stmt_del->execute([$id]);
+
+            $stmt_ins = $this->db->prepare("INSERT INTO debt_members (debt_id, member_id) VALUES (?, ?)");
+            foreach ($debtors as $mid) {
+                $stmt_ins->execute([$id, $mid]);
+            }
+
+            $this->db->commit();
+            return true;
+        } catch (\Exception $e) {
+            $this->db->rollBack();
+            return false;
+        }
     }
 }

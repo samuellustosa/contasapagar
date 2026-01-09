@@ -81,6 +81,9 @@ $base = "";
                                     <a href="<?= $base ?>/pagar?id=<?= $c['id'] ?>&mes=<?= $mes_selecionado ?>&ano=<?= $ano_selecionado ?>" class="btn btn-sm btn-light border">
                                         <?= $c['is_paid'] ? 'Desmarcar' : 'Pagar' ?>
                                     </a>
+                                    <a href="/editar-conta?id=<?= $c['id'] ?>" class="btn btn-sm btn-light border">
+                                    Editar
+                                    </a>
                                     <button onclick="confirmarExclusao(<?= $c['id'] ?>, '<?= $c['tipo'] ?>')" class="btn btn-sm btn-outline-danger">
                                         Excluir
                                     </button>
@@ -111,6 +114,9 @@ $base = "";
                     <div class="btn-group gap-2">
                         <a href="<?= $base ?>/pagar?id=<?= $c['id'] ?>&mes=<?= $mes_selecionado ?>&ano=<?= $ano_selecionado ?>" class="btn btn-sm btn-light border">
                             <?= $c['is_paid'] ? 'Desmarcar' : 'Pagar' ?>
+                        </a>
+                        <a href="/editar-conta?id=<?= $c['id'] ?>" class="btn btn-sm btn-light border">
+                            Editar
                         </a>
                         <button onclick="confirmarExclusao(<?= $c['id'] ?>, '<?= $c['tipo'] ?>')" class="btn btn-sm btn-outline-danger">
                             Excluir

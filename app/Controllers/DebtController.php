@@ -170,4 +170,44 @@ class DebtController {
         $dompdf->render();
         $dompdf->stream("Relatorio_Financeiro_{$mes}_{$ano}.pdf", ["Attachment" => false]);
     }
+
+
+    public function edit() {
+        if (session_status() === PHP_SESSION_NONE) session_start();
+        if (!isset($_SESSION['logado'])) { header("Location: /login"); exit; }
+
+        $user_id = $_SESSION['user_id'];
+        $debtModel = new Debt();
+        $memberModel = new Member();
+        $id = $_GET['id'] ?? $_POST['id'] ?? null;
+
+        if (!$id) { header("Location: /home"); exit; }
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Validação CSRF
+            if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+                die("Erro de segurança CSRF.");
+            }
+
+            $success = $debtModel->update(
+                $id,
+                $_POST['name'],
+                $_POST['amount'],
+                $_POST['due_date'],
+                $_POST['debtors'] ?? [],
+                $user_id
+            );
+
+            if ($success) {
+                header("Location: /home?msg=editado");
+                exit;
+            }
+        }
+
+        $conta = $debtModel->find($id, $user_id);
+        if (!$conta) { die("Conta não encontrada."); }
+        
+        $membros = $memberModel->getAll($user_id);
+        require_once 'app/Views/editar-conta.php';
+    }
 }
