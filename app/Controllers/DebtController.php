@@ -172,6 +172,7 @@ class DebtController {
     }
 
 
+
     public function edit() {
         if (session_status() === PHP_SESSION_NONE) session_start();
         if (!isset($_SESSION['logado'])) { header("Location: /login"); exit; }
@@ -184,10 +185,12 @@ class DebtController {
         if (!$id) { header("Location: /home"); exit; }
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // Validação CSRF
             if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-                die("Erro de segurança CSRF.");
+                die("Erro CSRF.");
             }
+
+            // Verifica se o usuário marcou para atualizar o grupo todo
+            $update_group = isset($_POST['update_all']) && $_POST['update_all'] == '1';
 
             $success = $debtModel->update(
                 $id,
@@ -195,11 +198,12 @@ class DebtController {
                 $_POST['amount'],
                 $_POST['due_date'],
                 $_POST['debtors'] ?? [],
-                $user_id
+                $user_id,
+                $update_group
             );
 
             if ($success) {
-                header("Location: /home?msg=editado");
+                header("Location: /home?msg=sucesso");
                 exit;
             }
         }

@@ -78,7 +78,7 @@ $base = "";
                 labels: <?= json_encode(array_map('htmlspecialchars', array_column($dados_relatorio, 'name'))) ?>,
                 datasets: [{
                     data: <?= json_encode(array_column($dados_relatorio, 'total_pessoa')) ?>,
-                    backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b'],
+                    backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#2600ffff', '#ff9900ff', '#ff00eaff', '#00ff00ff'],
                     hoverOffset: 4
                 }]
             }

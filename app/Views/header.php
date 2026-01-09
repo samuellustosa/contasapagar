@@ -4,13 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0d6efd">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Contas a Pagar">
+    <meta property="og:description" content="Organize as finanças da sua família de forma simples.">
+    <meta property="og:url" content="https://samuellst.cloud/">
+    <meta property="og:image" content="https://samuellst.cloud/icon-512x512.png">
+    <meta property="og:image:width" content="512">
+    <meta property="og:image:height" content="512">
+    <meta property="og:image:type" content="image/png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Contas a Pagar">
+    <meta name="twitter:description" content="Gestão financeira familiar simplificada.">
+    <meta name="twitter:image" content="https://samuellst.cloud/icon-512x512.png">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
+    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Contas a Pagar">
     <link rel="apple-touch-icon" href="icon-192x192.png">
+    
     <title>Contas a Pagar</title>
+    
     <style>
         body { padding-top: 70px; }
         .sticky-menu { position: sticky; top: 72px; z-index: 1020; background-color: #f8f9fa; padding-bottom: 10px; }
@@ -26,7 +44,6 @@
         }
         @keyframes skeleton-loading { 0% { background-position: -200px 0; } 100% { background-position: calc(200px + 100%) 0; } }
         
-   
         .content-hidden { display: none !important; }
     </style>
 </head>
@@ -77,7 +94,14 @@
         <?php if (isset($_GET['msg'])): ?>
             <div class="alert alert-success alert-dismissible fade show mt-3 shadow-sm" role="alert">
                 <?php
-                    $mensagens = ['sucesso' => 'Sucesso!', 'excluido' => 'Removido!', 'membro_add' => 'Membro adicionado!', 'ativado' => 'Conta ativada!'];
+                    $mensagens = [
+                        'sucesso' => 'Salvo com sucesso!', 
+                        'editado' => 'Alterações gravadas!',
+                        'excluido' => 'Removido!', 
+                        'membro_add' => 'Membro adicionado!', 
+                        'ativado' => 'Conta ativada!',
+                        'grupo_excluido' => 'Todo o grupo foi removido!'
+                    ];
                     echo htmlspecialchars($mensagens[$_GET['msg']] ?? 'Ação concluída!');
                 ?>
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
