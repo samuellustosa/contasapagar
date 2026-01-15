@@ -4,11 +4,11 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// 2. Caminho corrigido para a raiz (sem ../)
+// 2. Caminho corrigido para a raiz
 require_once 'vendor/autoload.php';
 session_start();
 
-// Autoload manual para garantir que as classes sejam encontradas na raiz
+// Autoload manual
 spl_autoload_register(function ($class) {
     $prefix = 'App\\';
     $base_dir = __DIR__ . '/app/';
@@ -29,9 +29,19 @@ use App\Controllers\MemberController;
 use App\Controllers\AuthController;
 use App\Controllers\DebtController;
 
-$url = $_GET['url'] ?? 'home';
+// --- AJUSTE DE ROTA PARA PWA ---
+// 1. Pega a URL e limpa barras extras
+$url = $_GET['url'] ?? '';
+$url = trim($url, '/');
 
+// 2. Se a URL terminar com .php (como no seu erro login.php), removemos a extensão
+if (str_ends_with($url, '.php')) {
+    $url = substr($url, 0, -4);
+}
+
+// 3. Roteamento
 switch ($url) {
+    case '':
     case 'home':
         (new HomeController())->index();
         break;
@@ -59,7 +69,7 @@ switch ($url) {
     case 'relatorios':
         (new DebtController())->report();
         break;
-    case 'relatorio-geral-pdf': // ADICIONADO: Rota para o PDF Geral
+    case 'relatorio-geral-pdf': 
         (new DebtController())->relatorioGeralPDF();
         break;
     case 'pagar':
@@ -69,10 +79,11 @@ switch ($url) {
         (new HomeController())->excluir(); 
         break;
     case 'editar-conta':
-        (new App\Controllers\DebtController())->edit();
+        (new DebtController())->edit();
         break;
     default:
         http_response_code(404);
         echo "<h1>404 - Página não encontrada</h1>";
+        echo "<p>Caminho tentado: " . htmlspecialchars($url) . "</p>";
         break;
 }

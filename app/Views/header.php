@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0d6efd">
+    <meta name="mobile-web-app-capable" content="yes">
     
     <meta property="og:type" content="website">
     <meta property="og:title" content="Contas a Pagar">
@@ -20,14 +21,26 @@
     <meta name="twitter:image" content="https://samuellst.cloud/icon-512x512.png">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="/manifest.json">
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Contas a Pagar">
-    <link rel="apple-touch-icon" href="icon-192x192.png">
+    <link rel="apple-touch-icon" href="/icon-192x192.png">
     
     <title>Contas a Pagar</title>
+
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0d6efd">
+
+    <script>
+        if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js');
+        });
+        }
+    </script>
+
     
     <style>
         body { padding-top: 70px; }
@@ -58,7 +71,7 @@
         $m = $_GET['mes'] ?? '';
         $a = $_GET['ano'] ?? '';
         $query = ($m && $a) ? "?mes=$m&ano=$a" : "";
-        $base = "";
+        $base = ""; // Mantenha vazio se os controladores usarem rotas amigáveis da raiz
     ?>
 
     <nav class="navbar navbar-dark bg-primary shadow-sm py-3 fixed-top">
@@ -71,9 +84,15 @@
     <div class="sticky-menu">
         <div class="d-flex justify-content-center pt-3">
             <div class="nav nav-pills bg-white p-1 rounded-pill shadow-sm border">
-                <a class="nav-link rounded-pill <?= (strpos($uri, 'home') !== false || $uri == '/' || substr($uri, -7) == 'public/') ? 'active' : 'text-secondary' ?>" href="<?= $base ?>/home<?= $query ?>">Mural</a>
-                <a class="nav-link rounded-pill <?= (strpos($uri, 'relatorios') !== false) ? 'active' : 'text-secondary' ?>" href="<?= $base ?>/relatorios<?= $query ?>">Relatórios</a>
-                <a class="nav-link rounded-pill <?= (strpos($uri, 'membros') !== false) ? 'active' : 'text-secondary' ?>" href="<?= $base ?>/membros<?= $query ?>">Família</a>
+                <?php 
+                    // Melhoria na lógica de active para evitar erros de strpos
+                    $isHome = (strpos($uri, 'home') !== false || $uri == '/' || $uri == '/index.php');
+                    $isRel = (strpos($uri, 'relatorios') !== false);
+                    $isMem = (strpos($uri, 'membros') !== false);
+                ?>
+                <a class="nav-link rounded-pill <?= $isHome ? 'active' : 'text-secondary' ?>" href="<?= $base ?>/home<?= $query ?>">Mural</a>
+                <a class="nav-link rounded-pill <?= $isRel ? 'active' : 'text-secondary' ?>" href="<?= $base ?>/relatorios<?= $query ?>">Relatórios</a>
+                <a class="nav-link rounded-pill <?= $isMem ? 'active' : 'text-secondary' ?>" href="<?= $base ?>/membros<?= $query ?>">Família</a>
             </div>
         </div>
     </div>
